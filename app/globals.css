@@ -1,0 +1,78 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-gradient-to-b from-white via-sky-50 to-white text-deepblue;
+    cursor: none;
+  }
+}
+
+@layer components {
+  .container-x {
+    @apply mx-auto w-full max-w-6xl px-4;
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold transition
+    focus:outline-none focus:ring-2 focus:ring-saffron/50 active:scale-[0.99];
+  }
+
+  .btn-primary {
+    @apply btn bg-deepblue text-white shadow-soft hover:bg-[#000000];
+  }
+
+  .btn-ghost {
+    @apply btn bg-white/80 text-deepblue shadow-sm ring-1 ring-deepblue/10 hover:bg-white;
+  }
+
+  .input {
+    @apply w-full rounded-xl border border-deepblue/10 bg-white px-3 py-2 text-sm text-deepblue
+    shadow-sm outline-none transition focus:border-saffron/60 focus:ring-2 focus:ring-saffron/20;
+  }
+
+  .label {
+    @apply mb-1 block text-xs font-semibold tracking-wide text-deepblue/80;
+  }
+
+  .chip {
+    @apply inline-flex items-center gap-2 rounded-full bg-deepblue/5 px-3 py-1 text-xs font-medium text-deepblue;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    scroll-behavior: auto !important;
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+/* Custom Cursor Trail Animation - clean version */
+@keyframes trail-fade {
+  0% {
+    opacity: 0.8;
+    transform: scale(1) translate(-50%, -50%);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.3) translate(-50%, -50%);
+  }
+}
+
+.animate-trail-fade {
+  animation: trail-fade 0.8s ease-out forwards;
+}
+
+/* Optional: reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .animate-trail-fade {
+    animation: none !important;
+    opacity: 0 !important;
+  }
+}

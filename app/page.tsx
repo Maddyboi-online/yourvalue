@@ -1,0 +1,193 @@
+"use client";
+
+import { motion } from "framer-motion";
+import Link from "next/link";
+
+export default function LandingPage() {
+  return (
+    <main className="pb-6 bg-black">
+      {/* Hero */}
+      <section className="container-x pt-10 md:pt-16">
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="grid gap-8 md:grid-cols-2 md:items-center"
+        >
+          <div className="space-y-5">
+            <div
+              className="inline-flex items-center gap-2 rounded-full border border-[#ABF62D] bg-[#ABF62D]/10 px-4 py-2 text-sm font-extrabold tracking-wide text-[#ABF62D]"
+              style={{ textShadow: "0 0 10px rgba(171, 246, 45, 0.45)" }}
+            >
+              <span className="inline-flex h-2 w-2 rounded-full bg-[#ABF62D]" />
+              Discover Who You Really Are
+            </div>
+
+            <h1 className="text-5xl font-black leading-[1.05] text-white md:text-6xl" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>
+              Discover Your{" "}
+              <span className="text-lime">True Value</span>
+            </h1>
+
+            <p className="text-base leading-relaxed text-white/60 md:text-lg">
+              Build your professional resume in 5 minutes <br /> and discover skills you never knew you had
+            </p>
+
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+              <Link href="/builder" className="btn text-base font-black px-7 py-4 bg-[#ABF62D] text-black hover:bg-[#9fdf2a]">
+                Build My Resume Free
+              </Link>
+              <p className="text-xs font-semibold text-white/40 sm:ml-1">
+                No signup. No downloads required until preview.
+              </p>
+            </div>
+          </div>
+
+          <Link
+            href="/builder"
+            className="group relative block cursor-pointer overflow-hidden rounded-3xl border border-white/10 bg-white/5 p-5 transition-all duration-300 ease-out hover:-translate-y-2 hover:border-[#ABF62D] hover:shadow-[0_20px_60px_rgba(171,246,45,0.15)]"
+          >
+            <div className="absolute -right-16 -top-16 h-44 w-44 rounded-full bg-lime/10 blur-2xl" />
+            <div className="absolute -bottom-16 -left-16 h-44 w-44 rounded-full bg-purple/10 blur-2xl" />
+            <div className="relative space-y-4">
+              <div className="flex items-center justify-between">
+                <p className="text-xs font-extrabold uppercase tracking-wider text-white/50">Instant Preview</p>
+                <span className="rounded-full bg-[#ABF62D] px-3 py-1 text-xs font-bold text-black">1 Click</span>
+              </div>
+              <div className="space-y-3 rounded-2xl bg-white/5 p-4 ring-1 ring-white/10">
+                <div className="h-2 w-3/4 rounded-full bg-white/10" />
+                <div className="h-2 w-1/2 rounded-full bg-white/10" />
+                <div className="grid gap-2 sm:grid-cols-2">
+                  <div className="h-10 rounded-xl bg-white/5" />
+                  <div className="h-10 rounded-xl bg-white/5" />
+                </div>
+                <div className="h-32 rounded-xl bg-white/5" />
+              </div>
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.15, duration: 0.6 }}
+                className="grid gap-3 sm:grid-cols-3"
+              >
+                {[
+                  { k: "Clean layout", v: "Single-page template" },
+                  { k: "Mobile-first", v: "Fast form experience" },
+                  { k: "PDF-ready", v: "Download in seconds" },
+                ].map((x) => (
+                  <div key={x.k} className="rounded-2xl bg-white/5 p-4 ring-1 ring-white/10">
+                    <p className="text-sm font-extrabold text-white">{x.k}</p>
+                    <p className="text-xs font-semibold text-white/50">{x.v}</p>
+                  </div>
+                ))}
+              </motion.div>
+            </div>
+            <div className="pointer-events-none absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-300 ease-out group-hover:opacity-100">
+              <span className="rounded-full bg-[#ABF62D] px-5 py-2 text-sm font-extrabold text-black">
+                Start Building →
+              </span>
+            </div>
+          </Link>
+        </motion.div>
+      </section>
+
+      {/* How it works */}
+      <section className="container-x pt-16 md:pt-20">
+        <div className="flex items-end justify-between gap-4">
+          <div className="space-y-2">
+            <p className="text-xs font-extrabold uppercase tracking-wider text-[#ABF62D]">How it works</p>
+            <h2 className="text-3xl font-black text-white md:text-4xl" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>
+              Build in 3 simple steps
+            </h2>
+          </div>
+          <div className="hidden h-14 w-14 items-center justify-center rounded-2xl bg-lime/10 ring-1 ring-lime/30 md:flex">
+            <span className="text-lg font-black text-lime">YV</span>
+          </div>
+        </div>
+
+        <div className="mt-7 grid gap-4 md:grid-cols-3">
+          {[
+            {
+              title: "Fill your details",
+              desc: "Add education, skills, work experience, certifications, and achievements.",
+            },
+            {
+              title: "Preview instantly",
+              desc: "See a professional, clean resume template with neat formatting.",
+            },
+            {
+              title: "Download as PDF",
+              desc: "Save your resume in a clean PDF format, ready to share anywhere.",
+            },
+          ].map((step, idx) => (
+            <motion.div
+              key={step.title}
+              initial={{ opacity: 0, y: 14 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: idx * 0.08, duration: 0.6 }}
+              className="group rounded-3xl bg-white/5 p-6 ring-1 ring-white/10 hover:ring-lime/30 transition-all"
+            >
+              <div className="flex items-center gap-3">
+                <div className="flex h-[44px] w-[44px] items-center justify-center rounded-full bg-[#ABF62D] text-lg font-bold text-black">
+                  {idx + 1}
+                </div>
+                <p className="text-base font-black text-white" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>{step.title}</p>
+              </div>
+              <p className="mt-3 text-sm leading-relaxed text-white/60">{step.desc}</p>
+              <div className="mt-5 h-px w-14 bg-gradient-to-r from-lime to-purple opacity-60" />
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
+      {/* Testimonials */}
+      <section className="container-x pt-16 md:pt-20">
+        <div className="space-y-2">
+          <p className="text-xs font-extrabold uppercase tracking-wider text-lime">Testimonials</p>
+          <h2 className="text-3xl font-black text-white md:text-4xl" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>
+            Loved by builders
+          </h2>
+        </div>
+        <div className="mt-7 grid gap-4 md:grid-cols-3">
+          {[
+            {
+              name: "Ananya K.",
+              role: "Career Switcher",
+              quote: "My resume looked instantly professional. The sections were so clean I didn't need to tweak anything.",
+            },
+            {
+              name: "Rahul S.",
+              role: "Fresh Graduate",
+              quote: "The form was simple and fast. The preview matched exactly what I wanted — modern and readable.",
+            },
+            {
+              name: "Meera V.",
+              role: "Internship Applicant",
+              quote: "Download-ready PDF in seconds. I sent it to recruiters right away and got great responses.",
+            },
+          ].map((t, i) => (
+            <motion.div
+              key={t.name}
+              initial={{ opacity: 0, y: 14 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.08, duration: 0.6 }}
+              className="rounded-3xl bg-white/5 p-6 ring-1 ring-white/10 hover:ring-purple/30 transition-all"
+            >
+              <div className="flex items-center justify-between">
+                <div className="space-y-1">
+                  <p className="text-sm font-extrabold text-white">{t.name}</p>
+                  <p className="text-xs font-semibold text-white/50">{t.role}</p>
+                </div>
+                <div className="text-lime" aria-hidden>
+                  {"★★★★★"}
+                </div>
+              </div>
+              <p className="mt-4 text-sm leading-relaxed text-white/60">"{t.quote}"</p>
+              <div className="mt-5 h-px w-20 bg-gradient-to-r from-lime to-purple opacity-60" />
+            </motion.div>
+          ))}
+        </div>
+      </section>
+    </main>
+  );
+}
