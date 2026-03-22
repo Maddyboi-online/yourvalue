@@ -1,789 +1,534 @@
 "use client";
 
-import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useMemo, useRef, useState } from "react";
-import type { ResumeData, ResumeEducation, ResumeWorkExperience, ResumeCertification } from "@/lib/resumeTypes";
-import { getEmptyResumeData } from "@/lib/resumeTypes";
-import TagInput from "@/components/builder/TagInput";
+import { useState, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { ResumeData, getEmptyResumeData } from "@/lib/resumeTypes";
+import TagInput from "./TagInput";
 
-type Props = {
-  initialData: ResumeData;
+interface ResumeFormProps {
+  initialData?: ResumeData;
   onDataChange?: (data: ResumeData) => void;
-  onSubmit: (data: ResumeData) => void;
-};
-
-function removeAt<T>(arr: T[], index: number) {
-  return [...arr.slice(0, index), ...arr.slice(index + 1)];
+  onSubmit?: (data: ResumeData) => void;
 }
 
-type SuggestInputProps = {
-  value: string;
-  placeholder?: string;
-  suggestions: string[];
-  onChange: (value: string) => void;
-};
+const techSkillSuggestions = [
+  "HTML/CSS", "JavaScript", "Python", "React",
+  "Node.js", "SQL", "TypeScript", "Git", "AWS", "Figma"
+];
 
-function SuggestInput({ value, placeholder, suggestions, onChange }: SuggestInputProps) {
-  const [open, setOpen] = useState(false);
-  const wrapperRef = useRef<HTMLDivElement | null>(null);
-  const filtered = useMemo(() => {
-    const q = value.trim().toLowerCase();
-    if (!q) return suggestions.slice(0, 5);
-    return suggestions.filter((s) => s.toLowerCase().includes(q)).slice(0, 5);
-  }, [value, suggestions]);
+const softSkillSuggestions = [
+  "Communication", "Leadership", "Team Work",
+  "Problem Solving", "Time Management", "Creativity"
+];
 
-  useEffect(() => {
-    const onDocClick = (event: MouseEvent) => {
-      if (!wrapperRef.current) return;
-      if (!wrapperRef.current.contains(event.target as Node)) setOpen(false);
-    };
-    document.addEventListener("mousedown", onDocClick);
-    return () => document.removeEventListener("mousedown", onDocClick);
-  }, []);
+const languageSuggestions = [
+  "English", "Hindi", "Tamil", "Telugu", 
+  "Kannada", "Malayalam", "Bengali"
+];
 
-  return (
-    <div ref={wrapperRef} className="relative">
-      <input
-        className="input"
-        value={value}
-        placeholder={placeholder}
-        onFocus={() => setOpen(true)}
-        onChange={(e) => {
-          onChange(e.target.value);
-          setOpen(true);
-        }}
-      />
-      {open && filtered.length > 0 && (
-        <div className="absolute z-20 mt-1 max-h-[200px] w-full overflow-y-auto rounded-[12px] border border-[#ABF62D40] bg-[#111111] py-1 shadow-[0_8px_32px_rgba(0,0,0,0.4)]">
-          {filtered.map((item) => (
-            <button
-              key={item}
-              type="button"
-              className="block w-full border-l-[3px] border-l-transparent px-4 py-[10px] text-left text-[14px] text-white transition-colors hover:border-l-[#ABF62D] hover:bg-[#ABF62D15] hover:text-[#ABF62D]"
-              onClick={() => {
-                onChange(item);
-                setOpen(false);
-              }}
-            >
-              {item}
-            </button>
-          ))}
-        </div>
-      )}
-    </div>
+const certSuggestions = [
+  "Google Digital Marketing",
+  "AWS Cloud Practitioner",
+  "Meta Frontend Developer",
+  "Google Data Analytics",
+  "IBM Data Science",
+  "Microsoft Azure Fundamentals",
+  "Coursera Python",
+  "HackerRank JavaScript",
+  "Udemy React Complete Guide",
+  "NPTEL Programming"
+];
+
+const roleSuggestions = [
+  "Software Engineer", "Frontend Developer",
+  "Backend Developer", "Full Stack Developer",
+  "UI/UX Designer", "Data Analyst",
+  "Product Manager", "Marketing Intern"
+];
+
+const companySuggestions = [
+  "TCS", "Infosys", "Wipro", "HCL",
+  "Google", "Microsoft", "Amazon",
+  "Flipkart", "Zomato", "Freshworks"
+];
+
+export default function ResumeForm({ 
+  initialData, 
+  onDataChange, 
+  onSubmit 
+}: ResumeFormProps) {
+  const [data, setData] = useState<ResumeData>(
+    initialData || getEmptyResumeData()
   );
-}
+  const [photo, setPhoto] = useState<string>("");
+  const fileRef = useRef<HTMLInputElement>(null);
 
-export default function ResumeForm({ initialData, onSubmit, onDataChange }: Props) {
-  const technicalSkillSuggestions = [
-    "HTML/CSS",
-    "JavaScript",
-    "Microsoft Office",
-    "Git",
-    "Python",
-    "React",
-    "TypeScript",
-    "SQL",
-    "Node.js",
-    "MongoDB",
-    "Docker",
-    "AWS",
-    "Figma",
-  ];
+  const update = (newData: ResumeData) => {
+    setData(newData);
+    onDataChange?.(newData);
+  };
 
-  const softSkillSuggestions = [
-    "Communication",
-    "Leadership",
-    "Team Work",
-    "Problem Solving",
-    "Time Management",
-    "Critical Thinking",
-    "Creativity",
-    "Adaptability",
-    "Project Management",
-    "Public Speaking",
-  ];
-
-  const languageSuggestions = [
-    "English",
-    "Hindi",
-    "Tamil",
-    "Telugu",
-    "Kannada",
-    "Malayalam",
-    "Bengali",
-    "Gujarati",
-    "Marathi",
-    "Punjabi",
-  ];
-
-  const certificateSuggestions = [
-    "Google Digital Marketing",
-    "AWS Cloud Practitioner",
-    "Meta Frontend Developer",
-    "Google Data Analytics",
-    "IBM Data Science",
-    "Microsoft Azure Fundamentals",
-    "Coursera Python",
-    "HackerRank JavaScript",
-    "Udemy React Complete Guide",
-    "NPTEL Programming",
-  ];
-
-  const [data, setData] = useState<ResumeData>(initialData);
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const [croppedImage, setCroppedImage] = useState<string | null>(null);
-  const [showCropModal, setShowCropModal] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-
-  const updatePersonal = (patch: Partial<ResumeData["personal"]>) => {
-    setData((prev) => {
-      const newData = { ...prev, personal: { ...prev.personal, ...patch } };
-      onDataChange?.(newData);
-      return newData;
+  const updatePersonal = (field: string, value: string) => {
+    update({
+      ...data,
+      personal: { ...data.personal, [field]: value }
     });
   };
 
-  const updateEducation = (index: number, patch: Partial<ResumeEducation>) => {
-    setData((prev) => {
-      const newData = {
-        ...prev,
-        education: prev.education.map((e, i) => (i === index ? { ...e, ...patch } : e)),
-      };
-      onDataChange?.(newData);
-      return newData;
+  const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const result = ev.target?.result as string;
+      setPhoto(result);
+      updatePersonal("profilePhoto", result);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const addEducation = () => {
+    update({
+      ...data,
+      education: [...data.education, {
+        schoolCollegeName: "", degreeOrClass: "", boardOrUniversity: "",
+        yearOfPassing: "", percentageOrCgpa: ""
+      }]
     });
   };
 
-  const updateWork = (index: number, patch: Partial<ResumeWorkExperience>) => {
-    setData((prev) => {
-      const newData = {
-        ...prev,
-        workExperience: prev.workExperience.map((w, i) => (i === index ? { ...w, ...patch } : w)),
-      };
-      onDataChange?.(newData);
-      return newData;
+  const removeEducation = (idx: number) => {
+    update({
+      ...data,
+      education: data.education.filter((_, i) => i !== idx)
     });
   };
 
-  const updateCertification = (index: number, patch: Partial<ResumeCertification>) => {
-    setData((prev) => {
-      const newData = {
-        ...prev,
-        certifications: prev.certifications.map((c, i) => (i === index ? { ...c, ...patch } : c)),
-      };
-      onDataChange?.(newData);
-      return newData;
+  const updateEducation = (idx: number, field: string, value: string) => {
+    const edu = [...data.education];
+    edu[idx] = { ...edu[idx], [field]: value };
+    update({ ...data, education: edu });
+  };
+
+  const addExperience = () => {
+    update({
+      ...data,
+      workExperience: [...data.workExperience, {
+        companyOrInternshipName: "", yourRoleOrPosition: "", startDate: "",
+        endDate: "", bullet1: "", bullet2: "", bullet3: ""
+      }]
     });
   };
 
-  const handlePhotoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setSelectedImage(e.target?.result as string);
-        setShowCropModal(true);
-      };
-      reader.readAsDataURL(file);
-    }
+  const removeExperience = (idx: number) => {
+    update({
+      ...data,
+      workExperience: data.workExperience.filter((_, i) => i !== idx)
+    });
   };
 
-  const handleCropComplete = (croppedImage: string) => {
-    setCroppedImage(croppedImage);
-    setShowCropModal(false);
-    updatePersonal({ profilePhoto: croppedImage });
+  const updateExperience = (idx: number, field: string, value: string) => {
+    const exp = [...data.workExperience];
+    exp[idx] = { ...exp[idx], [field]: value };
+    update({ ...data, workExperience: exp });
   };
 
-  const handleRemovePhoto = () => {
-    setCroppedImage(null);
-    setSelectedImage(null);
-    updatePersonal({ profilePhoto: undefined });
+  const updateBullet = (expIdx: number, bulletIdx: number, value: string) => {
+    const exp = [...data.workExperience];
+    const bulletField = `bullet${bulletIdx + 1}` as keyof typeof exp[0];
+    exp[expIdx] = { ...exp[expIdx], [bulletField]: value };
+    update({ ...data, workExperience: exp });
   };
+
+  const addCert = () => {
+    update({
+      ...data,
+      certifications: [...data.certifications, {
+        certificateName: "", issuedBy: "", year: ""
+      }]
+    });
+  };
+
+  const removeCert = (idx: number) => {
+    update({
+      ...data,
+      certifications: data.certifications.filter((_, i) => i !== idx)
+    });
+  };
+
+  const updateCert = (idx: number, field: string, value: string) => {
+    const certs = [...data.certifications];
+    certs[idx] = { ...certs[idx], [field]: value };
+    update({ ...data, certifications: certs });
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onSubmit?.(data);
+  };
+
+  const inputClass = "w-full rounded-xl border border-[#2a2a2a] bg-[#1a1a1a] px-3 py-2.5 text-sm text-[#F5F5F5] placeholder-[#666] focus:border-[#ABF62D] focus:outline-none transition-colors";
+  const labelClass = "block text-xs font-semibold text-[#cccccc] mb-1.5";
+  const sectionClass = "bg-[#0f0f0f] border border-[#222] rounded-2xl p-6 space-y-5";
+  const sectionTitleClass = "text-[#ABF62D] font-bold text-base flex items-center gap-2";
 
   return (
-    <div className="container-x py-8 md:py-12">
-      <div className="space-y-6">
-        <div>
-          <h1 className="text-2xl font-black text-white md:text-3xl">Build your resume in minutes</h1>
-          <p className="text-sm font-semibold text-white/50">
-            Fill this form and generate a clean, modern, white resume template.
-          </p>
+    <form onSubmit={handleSubmit} className="space-y-6">
+      
+      {/* Personal Info */}
+      <div className={sectionClass}>
+        <h3 className={sectionTitleClass}>
+          <span className="w-1 h-5 bg-[#ABF62D] rounded-full" />
+          Personal Info
+        </h3>
+        
+        {/* Photo Upload */}
+        <div className="flex flex-col items-center gap-2">
+          <button
+            type="button"
+            onClick={() => fileRef.current?.click()}
+            className="w-24 h-24 rounded-full border-2 border-dashed border-[#ABF62D] bg-[#1a1a1a] flex items-center justify-center overflow-hidden hover:border-[#9fdf2a] transition-colors"
+          >
+            {photo ? (
+              <img src={photo} alt="Profile" className="w-full h-full object-cover" />
+            ) : (
+              <svg className="w-8 h-8 text-[#ABF62D]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+            )}
+          </button>
+          <p className="text-xs text-[#888]">Add Photo (Optional)</p>
+          {photo && (
+            <button
+              type="button"
+              onClick={() => { setPhoto(""); updatePersonal("profilePhoto", ""); }}
+              className="text-xs text-[#ff4444] hover:text-red-300"
+            >
+              Remove
+            </button>
+          )}
+          <input
+            ref={fileRef}
+            type="file"
+            accept="image/jpeg,image/png,image/webp"
+            onChange={handlePhotoChange}
+            className="hidden"
+          />
         </div>
 
-        <div className="mt-6 rounded-[24px] border border-[#222222] bg-[#0f0f0f] p-4 shadow-soft md:p-6">
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              onSubmit(data);
-            }}
-            className="space-y-7"
-          >
-            {/* Personal Info */}
-            <motion.section
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="space-y-4"
-            >
-              <div className="flex items-end justify-between gap-4">
-                <div>
-                  <p className="text-sm font-black text-[#ABF62D]">Personal Info</p>
-                  <p className="text-xs font-semibold text-[#888888]">Basic details recruiters look for.</p>
-                </div>
-                <div className="hidden h-14 w-14 items-center justify-center rounded-2xl bg-[#ABF62D]/10 ring-1 ring-[#ABF62D]/30 md:flex">
-                  <span className="text-lg font-black text-[#ABF62D]">PI</span>
-                </div>
-              </div>
-
-              <div className="grid gap-4 md:grid-cols-2">
-                {/* Profile Photo */}
-                <div className="md:col-span-2">
-                  <label className="label text-[#cccccc]">Profile Photo (Optional)</label>
-                  <div className="flex items-center gap-4">
-                    <div 
-                      className="relative w-[100px] h-[100px] rounded-full border-2 border-dashed border-[#ABF62D] bg-[#1a1a1a] flex items-center justify-center cursor-pointer hover:border-[#ABF62D] transition-colors"
-                      onClick={() => fileInputRef.current?.click()}
-                    >
-                      {croppedImage ? (
-                        <img 
-                          src={croppedImage} 
-                          alt="Profile" 
-                          className="w-full h-full rounded-full object-cover"
-                        />
-                      ) : (
-                        <svg className="w-6 h-6 text-[#ABF62D]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
-                        </svg>
-                      )}
-                    </div>
-                    <div className="flex-1">
-                      <p className="text-[#888888] text-sm mb-2">Add Photo (Optional)</p>
-                      {croppedImage && (
-                        <div className="flex gap-2">
-                          <button
-                            type="button"
-                            className="text-[#888888] hover:text-white text-xs underline"
-                            onClick={handleRemovePhoto}
-                          >
-                            Remove
-                          </button>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    accept="image/jpeg,image/png,image/webp"
-                    onChange={handlePhotoUpload}
-                    className="hidden"
-                  />
-                </div>
-
-                {/* Name Input */}
-                <div>
-                  <label className="label text-[#cccccc]">Full Name <span className="text-red-500">*</span></label>
-                  <input
-                    className="input"
-                    value={data.personal.fullName}
-                    onChange={(e) => updatePersonal({ fullName: e.target.value })}
-                    placeholder="e.g., Arjun Sharma"
-                    required
-                  />
-                </div>
-                
-                {/* Phone Input */}
-                <div>
-                  <label className="label text-[#cccccc]">Phone Number <span className="text-red-500">*</span></label>
-                  <input
-                    className="input"
-                    value={data.personal.phoneNumber}
-                    onChange={(e) => updatePersonal({ phoneNumber: e.target.value })}
-                    placeholder="+91 98765 43210"
-                    required
-                  />
-                </div>
-
-                {/* Email Input */}
-                <div>
-                  <label className="label text-[#cccccc]">Email <span className="text-red-500">*</span></label>
-                  <input
-                    className="input"
-                    type="email"
-                    value={data.personal.emailAddress}
-                    onChange={(e) => updatePersonal({ emailAddress: e.target.value })}
-                    placeholder="arjun.sharma@email.com"
-                    required
-                  />
-                </div>
-
-                {/* City Input */}
-                <div>
-                  <label className="label text-[#cccccc]">City/State</label>
-                  <input
-                    className="input"
-                    value={data.personal.cityState}
-                    onChange={(e) => updatePersonal({ cityState: e.target.value })}
-                    placeholder="Mumbai, Maharashtra"
-                  />
-                </div>
-
-                {/* LinkedIn Input */}
-                <div className="md:col-span-2">
-                  <label className="label text-[#cccccc]">LinkedIn URL (optional)</label>
-                  <input
-                    className="input"
-                    value={data.personal.linkedInUrl ?? ""}
-                    onChange={(e) => updatePersonal({ linkedInUrl: e.target.value })}
-                    placeholder="https://linkedin.com/in/your-profile"
-                  />
-                </div>
-              </div>
-            </motion.section>
-
-            {/* Skills */}
-            <motion.section
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
-              className="space-y-4"
-            >
-              <div className="flex items-end justify-between gap-4">
-                <div>
-                  <p className="text-sm font-black text-[#ABF62D]">Skills</p>
-                  <p className="text-xs font-semibold text-[#888888]">Showcase your technical and soft skills.</p>
-                </div>
-                <div className="hidden h-14 w-14 items-center justify-center rounded-2xl bg-[#ABF62D]/10 ring-1 ring-[#ABF62D]/30 md:flex">
-                  <span className="text-lg font-black text-[#ABF62D]">SK</span>
-                </div>
-              </div>
-
-              <div className="space-y-4">
-                {/* Technical Skills */}
-                <div>
-                  <label className="label text-[#cccccc]">Technical Skills</label>
-                  <TagInput
-                    label="Technical Skills"
-                    value={data.skills.technicalSkills}
-                    onChange={(technical) => setData((prev) => ({ ...prev, skills: { ...prev.skills, technicalSkills: technical } }))}
-                    suggestions={technicalSkillSuggestions}
-                    placeholder="Add technical skills..."
-                  />
-                </div>
-
-                {/* Soft Skills */}
-                <div>
-                  <label className="label text-[#cccccc]">Soft Skills</label>
-                  <TagInput
-                    label="Soft Skills"
-                    value={data.skills.softSkills}
-                    onChange={(soft) => setData((prev) => ({ ...prev, skills: { ...prev.skills, softSkills: soft } }))}
-                    suggestions={softSkillSuggestions}
-                    placeholder="Add soft skills..."
-                  />
-                </div>
-
-                {/* Languages */}
-                <div>
-                  <label className="label text-[#cccccc]">Languages Known</label>
-                  <TagInput
-                    label="Languages Known"
-                    value={data.skills.languagesKnown}
-                    onChange={(languages) => setData((prev) => ({ ...prev, skills: { ...prev.skills, languagesKnown: languages } }))}
-                    suggestions={languageSuggestions}
-                    placeholder="Add languages..."
-                  />
-                </div>
-              </div>
-            </motion.section>
-
-            {/* Education */}
-            <motion.section
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="space-y-4"
-            >
-              <div className="flex items-end justify-between gap-4">
-                <div>
-                  <p className="text-sm font-black text-[#ABF62D]">Education</p>
-                  <p className="text-xs font-semibold text-[#888888]">Your academic background.</p>
-                </div>
-                <div className="hidden h-14 w-14 items-center justify-center rounded-2xl bg-[#ABF62D]/10 ring-1 ring-[#ABF62D]/30 md:flex">
-                  <span className="text-lg font-black text-[#ABF62D]">ED</span>
-                </div>
-              </div>
-
-              <AnimatePresence>
-                {data.education.map((edu, index) => (
-                  <motion.div
-                    key={index}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: 20 }}
-                    className="rounded-2xl border border-[#222222] bg-[#1a1a1a] p-4"
-                  >
-                    <div className="grid gap-4 md:grid-cols-2">
-                      <div>
-                        <label className="label text-[#cccccc]">School/College Name</label>
-                        <input
-                          className="input"
-                          value={edu.schoolCollegeName}
-                          onChange={(e) => updateEducation(index, { schoolCollegeName: e.target.value })}
-                          placeholder="IIT Bombay"
-                        />
-                      </div>
-                      <div>
-                        <label className="label text-[#cccccc]">Degree</label>
-                        <input
-                          className="input"
-                          value={edu.degreeOrClass}
-                          onChange={(e) => updateEducation(index, { degreeOrClass: e.target.value })}
-                          placeholder="B.Tech Computer Science"
-                        />
-                      </div>
-                      <div>
-                        <label className="label text-[#cccccc]">Board/University</label>
-                        <input
-                          className="input"
-                          value={edu.boardOrUniversity}
-                          onChange={(e) => updateEducation(index, { boardOrUniversity: e.target.value })}
-                          placeholder="Mumbai University"
-                        />
-                      </div>
-                      <div>
-                        <label className="label text-[#cccccc]">Year</label>
-                        <input
-                          className="input"
-                          value={edu.yearOfPassing}
-                          onChange={(e) => updateEducation(index, { yearOfPassing: e.target.value })}
-                          placeholder="2023"
-                        />
-                      </div>
-                      <div className="md:col-span-2">
-                        <label className="label text-[#cccccc]">Percentage/CGPA</label>
-                        <input
-                          className="input"
-                          value={edu.percentageOrCgpa}
-                          onChange={(e) => updateEducation(index, { percentageOrCgpa: e.target.value })}
-                          placeholder="8.5 CGPA"
-                        />
-                      </div>
-                    </div>
-                    {data.education.length > 1 && (
-                      <button
-                        type="button"
-                        className="mt-4 px-3 py-2 text-sm font-medium rounded-lg bg-[#ff4444] text-white hover:opacity-90"
-                        onClick={() => {
-                          const newData = {
-                            ...data,
-                            education: removeAt(data.education, index),
-                          };
-                          setData(newData);
-                          onDataChange?.(newData);
-                        }}
-                      >
-                        Remove Education
-                      </button>
-                    )}
-                  </motion.div>
-                ))}
-              </AnimatePresence>
-
-              <button
-                type="button"
-                className="px-4 py-2 text-sm font-bold rounded-lg bg-[#ABF62D] text-black hover:opacity-90"
-                onClick={() => {
-                  const newData = {
-                    ...data,
-                    education: [...data.education, getEmptyResumeData().education[0]],
-                  };
-                  setData(newData);
-                  onDataChange?.(newData);
-                }}
-              >
-                Add Education
-              </button>
-            </motion.section>
-
-            {/* Work Experience */}
-            <motion.section
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              className="space-y-4"
-            >
-              <div className="flex items-end justify-between gap-4">
-                <div>
-                  <p className="text-sm font-black text-[#ABF62D]">Work Experience</p>
-                  <p className="text-xs font-semibold text-[#888888]">Your professional journey.</p>
-                </div>
-                <div className="hidden h-14 w-14 items-center justify-center rounded-2xl bg-[#ABF62D]/10 ring-1 ring-[#ABF62D]/30 md:flex">
-                  <span className="text-lg font-black text-[#ABF62D]">WE</span>
-                </div>
-              </div>
-
-              <AnimatePresence>
-                {data.workExperience.map((work, index) => (
-                  <motion.div
-                    key={index}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: 20 }}
-                    className="rounded-2xl border border-[#222222] bg-[#1a1a1a] p-4"
-                  >
-                    <div className="grid gap-4 md:grid-cols-2">
-                      <div>
-                        <label className="label text-[#cccccc]">Company Name</label>
-                        <input
-                          className="input"
-                          value={work.companyOrInternshipName}
-                          onChange={(e) => updateWork(index, { companyOrInternshipName: e.target.value })}
-                          placeholder="Google"
-                        />
-                      </div>
-                      <div>
-                        <label className="label text-[#cccccc]">Role</label>
-                        <input
-                          className="input"
-                          value={work.yourRoleOrPosition}
-                          onChange={(e) => updateWork(index, { yourRoleOrPosition: e.target.value })}
-                          placeholder="Software Engineer"
-                        />
-                      </div>
-                      <div>
-                        <label className="label text-[#cccccc]">Start Date</label>
-                        <input
-                          className="input"
-                          value={work.startDate}
-                          onChange={(e) => updateWork(index, { startDate: e.target.value })}
-                          placeholder="Jan 2022"
-                        />
-                      </div>
-                      <div>
-                        <label className="label text-[#cccccc]">End Date</label>
-                        <input
-                          className="input"
-                          value={work.endDate}
-                          onChange={(e) => updateWork(index, { endDate: e.target.value })}
-                          placeholder="Present"
-                        />
-                      </div>
-                      <div className="md:col-span-2">
-                        <label className="label text-[#cccccc]">What you did (3 bullet points)</label>
-                        <textarea
-                          className="input min-h-[100px]"
-                          value={work.bullet1}
-                          onChange={(e) => updateWork(index, { bullet1: e.target.value })}
-                          placeholder="• Developed and maintained web applications using React and Node.js"
-                        />
-                      </div>
-                    </div>
-                    {data.workExperience.length > 1 && (
-                      <button
-                        type="button"
-                        className="mt-4 px-3 py-2 text-sm font-medium rounded-lg bg-[#ff4444] text-white hover:opacity-90"
-                        onClick={() => {
-                          const newData = {
-                            ...data,
-                            workExperience: removeAt(data.workExperience, index),
-                          };
-                          setData(newData);
-                          onDataChange?.(newData);
-                        }}
-                      >
-                        Remove Experience
-                      </button>
-                    )}
-                  </motion.div>
-                ))}
-              </AnimatePresence>
-
-              <button
-                type="button"
-                className="px-4 py-2 text-sm font-bold rounded-lg bg-[#ABF62D] text-black hover:opacity-90"
-                onClick={() => {
-                  const newData = {
-                    ...data,
-                    workExperience: [...data.workExperience, getEmptyResumeData().workExperience[0]],
-                  };
-                  setData(newData);
-                  onDataChange?.(newData);
-                }}
-              >
-                Add Work Experience
-              </button>
-            </motion.section>
-
-            {/* Certifications */}
-            <motion.section
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
-              className="space-y-4"
-            >
-              <div className="flex items-end justify-between gap-4">
-                <div>
-                  <p className="text-sm font-black text-[#ABF62D]">Certifications</p>
-                  <p className="text-xs font-semibold text-[#888888]">Your professional certifications.</p>
-                </div>
-                <div className="hidden h-14 w-14 items-center justify-center rounded-2xl bg-[#ABF62D]/10 ring-1 ring-[#ABF62D]/30 md:flex">
-                  <span className="text-lg font-black text-[#ABF62D]">CE</span>
-                </div>
-              </div>
-
-              {/* Suggestion Pills */}
-              <div className="flex flex-wrap gap-2">
-                {certificateSuggestions.map((cert) => (
-                  <button
-                    key={cert}
-                    type="button"
-                    className="chip"
-                    onClick={() => {
-                      const newData = {
-                        ...data,
-                        certifications: [
-                          ...data.certifications,
-                          getEmptyResumeData().certifications[0],
-                        ],
-                      };
-                      newData.certifications[newData.certifications.length - 1].certificateName = cert;
-                      setData(newData);
-                      onDataChange?.(newData);
-                    }}
-                  >
-                    {cert}
-                  </button>
-                ))}
-              </div>
-
-              <AnimatePresence>
-                {data.certifications.map((cert, index) => (
-                  <motion.div
-                    key={index}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: 20 }}
-                    className="rounded-2xl border border-[#222222] bg-[#1a1a1a] p-4"
-                  >
-                    <div className="grid gap-4 md:grid-cols-3">
-                      <div>
-                        <label className="label text-[#cccccc]">Certificate Name</label>
-                        <SuggestInput
-                          value={cert.certificateName}
-                          onChange={(name) => updateCertification(index, { certificateName: name })}
-                          suggestions={certificateSuggestions}
-                          placeholder="e.g., AWS Cloud Practitioner"
-                        />
-                      </div>
-                      <div>
-                        <label className="label text-[#cccccc]">Issued By</label>
-                        <input
-                          className="input"
-                          value={cert.issuedBy}
-                          onChange={(e) => updateCertification(index, { issuedBy: e.target.value })}
-                          placeholder="Amazon Web Services"
-                        />
-                      </div>
-                      <div>
-                        <label className="label text-[#cccccc]">Year</label>
-                        <input
-                          className="input"
-                          value={cert.year}
-                          onChange={(e) => updateCertification(index, { year: e.target.value })}
-                          placeholder="2023"
-                        />
-                      </div>
-                    </div>
-                    {data.certifications.length > 1 && (
-                      <button
-                        type="button"
-                        className="mt-4 px-3 py-2 text-sm font-medium rounded-lg bg-[#ff4444] text-white hover:opacity-90"
-                        onClick={() => {
-                          const newData = {
-                            ...data,
-                            certifications: removeAt(data.certifications, index),
-                          };
-                          setData(newData);
-                          onDataChange?.(newData);
-                        }}
-                      >
-                        Remove Certification
-                      </button>
-                    )}
-                  </motion.div>
-                ))}
-              </AnimatePresence>
-
-              <button
-                type="button"
-                className="px-4 py-2 text-sm font-bold rounded-lg bg-[#ABF62D] text-black hover:opacity-90"
-                onClick={() => {
-                  const newData = {
-                    ...data,
-                    certifications: [...data.certifications, getEmptyResumeData().certifications[0]],
-                  };
-                  setData(newData);
-                  onDataChange?.(newData);
-                }}
-              >
-                Add Certification
-              </button>
-            </motion.section>
-
-            {/* Achievements */}
-            <motion.section
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5 }}
-              className="space-y-4"
-            >
-              <div className="flex items-end justify-between gap-4">
-                <div>
-                  <p className="text-sm font-black text-[#ABF62D]">Achievements</p>
-                  <p className="text-xs font-semibold text-[#888888]">Your accomplishments and awards.</p>
-                </div>
-                <div className="hidden h-14 w-14 items-center justify-center rounded-2xl bg-[#ABF62D]/10 ring-1 ring-[#ABF62D]/30 md:flex">
-                  <span className="text-lg font-black text-[#ABF62D]">AC</span>
-                </div>
-              </div>
-
-              <div>
-                <label className="label text-[#cccccc]">Achievements</label>
-                <textarea
-                  className="input min-h-[120px]"
-                  value={data.achievements}
-                  onChange={(e) => setData((prev) => ({ ...prev, achievements: e.target.value }))}
-                  placeholder="• Won 1st prize in college hackathon&#10;• Published research paper on machine learning&#10;• Led team of 5 developers for final year project"
-                />
-              </div>
-            </motion.section>
-
-            {/* Submit Buttons */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6 }}
-              className="flex justify-between gap-4"
-            >
-              <button
-                type="button"
-                className="btn-ghost btn bg-white px-3 py-2"
-                onClick={() => {
-                  setData(getEmptyResumeData());
-                  onDataChange?.(getEmptyResumeData());
-                }}
-              >
-                Reset
-              </button>
-              <button type="submit" className="btn-primary btn text-base">
-                Preview My Resume
-              </button>
-            </motion.div>
-          </form>
+        <div className="grid gap-4 md:grid-cols-2">
+          <div>
+            <label className={labelClass}>Full Name <span className="text-[#ff4444]">*</span></label>
+            <input className={inputClass} placeholder="e.g., Arjun Sharma" value={data.personal.fullName} onChange={e => updatePersonal("fullName", e.target.value)} required />
+          </div>
+          <div>
+            <label className={labelClass}>Phone <span className="text-[#ff4444]">*</span></label>
+            <input className={inputClass} placeholder="e.g., +91 98765 43210" value={data.personal.phoneNumber} onChange={e => updatePersonal("phoneNumber", e.target.value)} required />
+          </div>
+          <div>
+            <label className={labelClass}>Email <span className="text-[#ff4444]">*</span></label>
+            <input className={inputClass} type="email" placeholder="e.g., arjun@email.com" value={data.personal.emailAddress} onChange={e => updatePersonal("emailAddress", e.target.value)} required />
+          </div>
+          <div>
+            <label className={labelClass}>City and State</label>
+            <input className={inputClass} placeholder="e.g., Mumbai, Maharashtra" value={data.personal.cityState} onChange={e => updatePersonal("cityState", e.target.value)} />
+          </div>
+          <div className="md:col-span-2">
+            <label className={labelClass}>LinkedIn URL (optional)</label>
+            <input className={inputClass} placeholder="https://linkedin.com/in/your-profile" value={data.personal.linkedInUrl} onChange={e => updatePersonal("linkedInUrl", e.target.value)} />
+          </div>
         </div>
       </div>
-    </div>
+
+      {/* Education */}
+      <div className={sectionClass}>
+        <div className="flex items-center justify-between">
+          <h3 className={sectionTitleClass}>
+            <span className="w-1 h-5 bg-[#ABF62D] rounded-full" />
+            Education
+          </h3>
+          <button type="button" onClick={addEducation} className="text-xs font-bold px-4 py-2 bg-[#ABF62D] text-black rounded-full hover:bg-[#9fdf2a] transition-all">
+            + Add Education
+          </button>
+        </div>
+        <AnimatePresence>
+          {data.education.map((edu, idx) => (
+            <motion.div key={idx} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="bg-[#111] border border-[#2a2a2a] rounded-xl p-4 space-y-3">
+              <div className="flex justify-between items-center">
+                <span className="text-xs font-bold text-[#ABF62D]">Education #{idx + 1}</span>
+                {idx > 0 && (
+                  <button type="button" onClick={() => removeEducation(idx)} className="text-xs px-3 py-1 bg-[#ff4444] text-white rounded-full">Remove</button>
+                )}
+              </div>
+              <div className="grid gap-3 md:grid-cols-2">
+                <div>
+                  <label className={labelClass}>School/College Name</label>
+                  <input className={inputClass} placeholder="e.g., IIT Madras" value={edu.schoolCollegeName} onChange={e => updateEducation(idx, "schoolCollegeName", e.target.value)} />
+                </div>
+                <div>
+                  <label className={labelClass}>Degree or Class</label>
+                  <input className={inputClass} placeholder="e.g., B.Tech, 12th" value={edu.degreeOrClass} onChange={e => updateEducation(idx, "degreeOrClass", e.target.value)} />
+                </div>
+                <div>
+                  <label className={labelClass}>Board/University</label>
+                  <input className={inputClass} placeholder="e.g., Anna University" value={edu.boardOrUniversity} onChange={e => updateEducation(idx, "boardOrUniversity", e.target.value)} />
+                </div>
+                <div>
+                  <label className={labelClass}>Year of Passing</label>
+                  <input className={inputClass} placeholder="e.g., 2024" value={edu.yearOfPassing} onChange={e => updateEducation(idx, "yearOfPassing", e.target.value)} />
+                </div>
+                <div>
+                  <label className={labelClass}>Percentage / CGPA</label>
+                  <input className={inputClass} placeholder="e.g., 8.5 CGPA" value={edu.percentageOrCgpa} onChange={e => updateEducation(idx, "percentageOrCgpa", e.target.value)} />
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </AnimatePresence>
+      </div>
+
+      {/* Skills */}
+      <div className={sectionClass}>
+        <h3 className={sectionTitleClass}>
+          <span className="w-1 h-5 bg-[#ABF62D] rounded-full" />
+          Skills
+        </h3>
+        
+        <div>
+          <label className={labelClass}>Technical Skills</label>
+          <div className="flex flex-wrap gap-2 mb-2">
+            {techSkillSuggestions.map(s => (
+              <button key={s} type="button"
+                onClick={() => {
+                  if (!data.skills.technicalSkills.includes(s)) {
+                    update({ ...data, skills: { ...data.skills, technicalSkills: [...data.skills.technicalSkills, s] } });
+                  }
+                }}
+                className="text-xs px-3 py-1 rounded-full border border-[#ABF62D] bg-[#1a1a1a] text-white hover:bg-[#ABF62D] hover:text-black transition-all"
+              >{s}</button>
+            ))}
+          </div>
+          <TagInput
+            label="Technical Skills"
+            value={data.skills.technicalSkills}
+            onChange={(technical) => update({ ...data, skills: { ...data.skills, technicalSkills: technical } })}
+            suggestions={techSkillSuggestions}
+            placeholder="Type skill and press Enter"
+          />
+        </div>
+
+        <div>
+          <label className={labelClass}>Soft Skills</label>
+          <div className="flex flex-wrap gap-2 mb-2">
+            {softSkillSuggestions.map(s => (
+              <button key={s} type="button"
+                onClick={() => {
+                  if (!data.skills.softSkills.includes(s)) {
+                    update({ ...data, skills: { ...data.skills, softSkills: [...data.skills.softSkills, s] } });
+                  }
+                }}
+                className="text-xs px-3 py-1 rounded-full border border-[#ABF62D] bg-[#1a1a1a] text-white hover:bg-[#ABF62D] hover:text-black transition-all"
+              >{s}</button>
+            ))}
+          </div>
+          <TagInput
+            label="Soft Skills"
+            value={data.skills.softSkills}
+            onChange={(soft) => update({ ...data, skills: { ...data.skills, softSkills: soft } })}
+            suggestions={softSkillSuggestions}
+            placeholder="Type skill and press Enter"
+          />
+        </div>
+
+        <div>
+          <label className={labelClass}>Languages Known</label>
+          <div className="flex flex-wrap gap-2 mb-2">
+            {languageSuggestions.map(s => (
+              <button key={s} type="button"
+                onClick={() => {
+                  if (!data.skills.languagesKnown.includes(s)) {
+                    update({ ...data, skills: { ...data.skills, languagesKnown: [...data.skills.languagesKnown, s] } });
+                  }
+                }}
+                className="text-xs px-3 py-1 rounded-full border border-[#ABF62D] bg-[#1a1a1a] text-white hover:bg-[#ABF62D] hover:text-black transition-all"
+              >{s}</button>
+            ))}
+          </div>
+          <TagInput
+            label="Languages Known"
+            value={data.skills.languagesKnown}
+            onChange={(languages) => update({ ...data, skills: { ...data.skills, languagesKnown: languages } })}
+            suggestions={languageSuggestions}
+            placeholder="Type language and press Enter"
+          />
+        </div>
+      </div>
+
+      {/* Work Experience */}
+      <div className={sectionClass}>
+        <div className="flex items-center justify-between">
+          <h3 className={sectionTitleClass}>
+            <span className="w-1 h-5 bg-[#ABF62D] rounded-full" />
+            Work Experience
+          </h3>
+          <button type="button" onClick={addExperience} className="text-xs font-bold px-4 py-2 bg-[#ABF62D] text-black rounded-full hover:bg-[#9fdf2a] transition-all">
+            + Add Experience
+          </button>
+        </div>
+        <AnimatePresence>
+          {data.workExperience.map((exp, idx) => (
+            <motion.div key={idx} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="bg-[#111] border border-[#2a2a2a] rounded-xl p-4 space-y-3">
+              <div className="flex justify-between items-center">
+                <span className="text-xs font-bold text-[#ABF62D]">Experience #{idx + 1}</span>
+                <button type="button" onClick={() => removeExperience(idx)} className="text-xs px-3 py-1 bg-[#ff4444] text-white rounded-full">Remove</button>
+              </div>
+              <div className="grid gap-3 md:grid-cols-2">
+                <div>
+                  <label className={labelClass}>Company/Internship Name</label>
+                  <input className={inputClass} list={`company-${idx}`} placeholder="e.g., Google India" value={exp.companyOrInternshipName} onChange={e => updateExperience(idx, "companyOrInternshipName", e.target.value)} />
+                  <datalist id={`company-${idx}`}>
+                    {companySuggestions.map(c => <option key={c} value={c} />)}
+                  </datalist>
+                </div>
+                <div>
+                  <label className={labelClass}>Your Role/Position</label>
+                  <input className={inputClass} list={`role-${idx}`} placeholder="e.g., Software Engineer" value={exp.yourRoleOrPosition} onChange={e => updateExperience(idx, "yourRoleOrPosition", e.target.value)} />
+                  <datalist id={`role-${idx}`}>
+                    {roleSuggestions.map(r => <option key={r} value={r} />)}
+                  </datalist>
+                </div>
+                <div>
+                  <label className={labelClass}>Start Date</label>
+                  <input className={inputClass} placeholder="e.g., Jan 2023" value={exp.startDate} onChange={e => updateExperience(idx, "startDate", e.target.value)} />
+                </div>
+                <div>
+                  <label className={labelClass}>End Date</label>
+                  <input className={inputClass} placeholder="e.g., Dec 2023 or Present" value={exp.endDate} onChange={e => updateExperience(idx, "endDate", e.target.value)} />
+                </div>
+              </div>
+              <div className="space-y-2">
+                {exp.bullet1 && exp.bullet2 && exp.bullet3 ? (
+                  <>
+                    <div>
+                      <label className={labelClass}>Bullet 1</label>
+                      <textarea className={`${inputClass} resize-none`} rows={2} placeholder="What did you do? Use numbers if possible" value={exp.bullet1} onChange={e => updateBullet(idx, 0, e.target.value)} />
+                    </div>
+                    <div>
+                      <label className={labelClass}>Bullet 2</label>
+                      <textarea className={`${inputClass} resize-none`} rows={2} placeholder="What did you do? Use numbers if possible" value={exp.bullet2} onChange={e => updateBullet(idx, 1, e.target.value)} />
+                    </div>
+                    <div>
+                      <label className={labelClass}>Bullet 3</label>
+                      <textarea className={`${inputClass} resize-none`} rows={2} placeholder="What did you do? Use numbers if possible" value={exp.bullet3} onChange={e => updateBullet(idx, 2, e.target.value)} />
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div>
+                      <label className={labelClass}>Bullet 1</label>
+                      <textarea className={`${inputClass} resize-none`} rows={2} placeholder="What did you do? Use numbers if possible" value={exp.bullet1 || ""} onChange={e => updateBullet(idx, 0, e.target.value)} />
+                    </div>
+                    <div>
+                      <label className={labelClass}>Bullet 2</label>
+                      <textarea className={`${inputClass} resize-none`} rows={2} placeholder="What did you do? Use numbers if possible" value={exp.bullet2 || ""} onChange={e => updateBullet(idx, 1, e.target.value)} />
+                    </div>
+                    <div>
+                      <label className={labelClass}>Bullet 3</label>
+                      <textarea className={`${inputClass} resize-none`} rows={2} placeholder="What did you do? Use numbers if possible" value={exp.bullet3 || ""} onChange={e => updateBullet(idx, 2, e.target.value)} />
+                    </div>
+                  </>
+                )}
+              </div>
+            </motion.div>
+          ))}
+        </AnimatePresence>
+      </div>
+
+      {/* Certifications */}
+      <div className={sectionClass}>
+        <div className="flex items-center justify-between">
+          <h3 className={sectionTitleClass}>
+            <span className="w-1 h-5 bg-[#ABF62D] rounded-full" />
+            Certifications
+          </h3>
+          <button type="button" onClick={addCert} className="text-xs font-bold px-4 py-2 bg-[#ABF62D] text-black rounded-full hover:bg-[#9fdf2a] transition-all">
+            + Add Certificate
+          </button>
+        </div>
+        
+        <div>
+          <p className="text-xs text-[#888] mb-2">Quick add — click to fill:</p>
+          <div className="flex flex-wrap gap-2 mb-3">
+            {certSuggestions.map(s => (
+              <button key={s} type="button"
+                onClick={() => {
+                  const certs = [...data.certifications];
+                  if (certs.length === 0) {
+                    certs.push({ certificateName: s, issuedBy: "", year: "" });
+                  } else {
+                    certs[certs.length - 1] = { ...certs[certs.length - 1], certificateName: s };
+                  }
+                  update({ ...data, certifications: certs });
+                }}
+                className="text-xs px-3 py-1 rounded-full border border-[#ABF62D] bg-[#1a1a1a] text-white hover:bg-[#ABF62D] hover:text-black transition-all"
+              >{s}</button>
+            ))}
+          </div>
+        </div>
+
+        <AnimatePresence>
+          {data.certifications.map((cert, idx) => (
+            <motion.div key={idx} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="bg-[#111] border border-[#2a2a2a] rounded-xl p-4 space-y-3">
+              <div className="flex justify-between items-center">
+                <span className="text-xs font-bold text-[#ABF62D]">Certificate #{idx + 1}</span>
+                <button type="button" onClick={() => removeCert(idx)} className="text-xs px-3 py-1 bg-[#ff4444] text-white rounded-full">Remove</button>
+              </div>
+              <div className="grid gap-3 md:grid-cols-3">
+                <div className="md:col-span-1">
+                  <label className={labelClass}>Certificate Name</label>
+                  <input className={inputClass} placeholder="e.g., AWS Cloud Practitioner" value={cert.certificateName} onChange={e => updateCert(idx, "certificateName", e.target.value)} />
+                </div>
+                <div>
+                  <label className={labelClass}>Issued By</label>
+                  <input className={inputClass} placeholder="e.g., Amazon" value={cert.issuedBy} onChange={e => updateCert(idx, "issuedBy", e.target.value)} />
+                </div>
+                <div>
+                  <label className={labelClass}>Year</label>
+                  <input className={inputClass} placeholder="e.g., 2024" value={cert.year} onChange={e => updateCert(idx, "year", e.target.value)} />
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </AnimatePresence>
+      </div>
+
+      {/* Achievements */}
+      <div className={sectionClass}>
+        <h3 className={sectionTitleClass}>
+          <span className="w-1 h-5 bg-[#ABF62D] rounded-full" />
+          Achievements
+        </h3>
+        <div>
+          <label className={labelClass}>Awards, Rankings, Competitions</label>
+          <textarea
+            className={`${inputClass} resize-none`}
+            rows={4}
+            placeholder="e.g., Won Smart India Hackathon 2023, Top 1% on LeetCode..."
+            value={data.achievements}
+            onChange={e => update({ ...data, achievements: e.target.value })}
+          />
+        </div>
+      </div>
+
+      {/* Submit */}
+      <button
+        type="submit"
+        className="w-full py-4 bg-[#ABF62D] text-black font-black text-base rounded-full hover:bg-[#9fdf2a] hover:scale-105 transition-all duration-300"
+      >
+        Preview My Resume →
+      </button>
+
+    </form>
   );
 }

@@ -1,263 +1,160 @@
 "use client";
-
-import { motion } from "framer-motion";
-import Link from "next/link";
 import { useState } from "react";
+import Link from "next/link";
+
+const faqs = [
+  { q: "Can I cancel anytime?", a: "Yes, cancel anytime. No questions asked." },
+  { q: "Is my data safe?", a: "Yes, we never share your data with anyone." },
+  { q: "What payment methods are accepted?", a: "UPI, Credit/Debit card, Net banking via Razorpay." },
+  { q: "Can I switch plans?", a: "Yes, upgrade or downgrade anytime." },
+  { q: "Do students get a discount?", a: "Yes! Students get 20% off. Show your college ID." },
+  { q: "Is there a free trial?", a: "The free plan is free forever. No trial needed." },
+];
 
 export default function PricingPage() {
-  const [billingCycle, setBillingCycle] = useState<"monthly" | "yearly">("monthly");
-
-  const plans = [
-    {
-      name: "Free",
-      price: "₹0",
-      period: "Forever free",
-      features: [
-        "Basic resume template",
-        "PDF download",
-        "1 resume per month",
-        "No ATS score",
-        "Basic support",
-      ],
-      buttonText: "Get Started",
-      popular: false,
-    },
-    {
-      name: "Pro Monthly",
-      price: "₹20",
-      period: "per month",
-      features: [
-        "Premium templates",
-        "Unlimited resumes",
-        "ATS score checker",
-        "Priority support",
-        "Resume analytics",
-        "Export to multiple formats",
-        "Cover letter templates",
-        "LinkedIn optimization",
-      ],
-      buttonText: "Start for ₹20/mo",
-      popular: true,
-    },
-    {
-      name: "Pro Yearly",
-      price: "₹249",
-      period: "per year",
-      smallText: "Just ₹20.75/month",
-      strikethrough: "₹240/year",
-      features: [
-        "Everything in Pro Monthly",
-        "Save ₹31 per year",
-        "Advanced ATS insights",
-        "Personal branding kit",
-        "Interview preparation",
-        "Career coaching credits",
-        "Resume video reviews",
-        "Job matching alerts",
-      ],
-      buttonText: "Get Yearly Plan",
-      popular: false,
-      bestValue: true,
-    },
-  ];
-
-  const faqs = [
-    {
-      question: "Can I change my plan anytime?",
-      answer: "Yes, you can upgrade or downgrade your plan at any time. Changes will be reflected in your next billing cycle.",
-    },
-    {
-      question: "What is ATS score?",
-      answer: "ATS (Applicant Tracking System) score shows how well your resume will perform when scanned by recruitment software used by companies.",
-    },
-    {
-      question: "Do you offer refunds?",
-      answer: "We offer a 7-day money-back guarantee for all paid plans. If you're not satisfied, contact us for a full refund.",
-    },
-    {
-      question: "Can I cancel my subscription?",
-      answer: "Yes, you can cancel your subscription anytime. You'll continue to have access until the end of your billing period.",
-    },
-    {
-      question: "What payment methods do you accept?",
-      answer: "We accept all major credit cards, debit cards, UPI, and net banking for Indian customers.",
-    },
-  ];
+  const [openFaq, setOpenFaq] = useState<number | null>(null);
 
   return (
     <main className="min-h-screen bg-black text-white">
-      <div className="container-x py-16">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-16"
-        >
-          <h1 className="text-4xl font-black text-white md:text-5xl mb-4">
-            Simple, Transparent Pricing
+      <div className="max-w-6xl mx-auto px-4 py-20">
+        
+        <div className="text-center mb-16">
+          <p className="text-xs font-bold tracking-widest text-[#ABF62D] uppercase mb-3">Pricing</p>
+          <h1 className="text-4xl md:text-5xl font-black text-white mb-4" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
+            Simple Pricing
           </h1>
-          <p className="text-lg text-[#888888] max-w-2xl mx-auto">
-            Choose the perfect plan for your career needs. Start free, upgrade when you're ready.
-          </p>
-        </motion.div>
-
-        {/* Billing Toggle */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="flex justify-center mb-12"
-        >
-          <div className="inline-flex items-center rounded-full bg-[#1a1a1a] p-1">
-            <button
-              className={`px-6 py-2 rounded-full text-sm font-medium transition-colors ${
-                billingCycle === "monthly"
-                  ? "bg-[#ABF62D] text-black"
-                  : "text-[#888888] hover:text-white"
-              }`}
-              onClick={() => setBillingCycle("monthly")}
-            >
-              Monthly
-            </button>
-            <button
-              className={`px-6 py-2 rounded-full text-sm font-medium transition-colors ${
-                billingCycle === "yearly"
-                  ? "bg-[#ABF62D] text-black"
-                  : "text-[#888888] hover:text-white"
-              }`}
-              onClick={() => setBillingCycle("yearly")}
-            >
-              Yearly (Save 17%)
-            </button>
-          </div>
-        </motion.div>
-
-        {/* Pricing Cards */}
-        <div className="grid gap-8 md:grid-cols-3 mb-16">
-          {plans.map((plan, index) => (
-            <motion.div
-              key={plan.name}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 + index * 0.1 }}
-              className={`relative rounded-2xl border ${
-                plan.popular
-                  ? "border-[#ABF62D] bg-[#ABF62D]/5"
-                  : plan.bestValue
-                  ? "border-purple-500 bg-purple-500/5"
-                  : "border-[#222222] bg-[#0f0f0f]"
-              } p-8 hover:transform hover:scale-105 transition-all duration-300`}
-            >
-              {/* Popular/Badges */}
-              {plan.popular && (
-                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                  <span className="inline-flex items-center rounded-full bg-[#ABF62D] px-4 py-1 text-xs font-bold text-black">
-                    MOST POPULAR
-                  </span>
-                </div>
-              )}
-              {plan.bestValue && (
-                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                  <span className="inline-flex items-center rounded-full bg-purple-500 px-4 py-1 text-xs font-bold text-white">
-                    BEST VALUE
-                  </span>
-                </div>
-              )}
-
-              {/* Plan Header */}
-              <div className="text-center mb-6">
-                <h3 className="text-xl font-black text-white">{plan.name}</h3>
-                <div className="text-3xl font-black mb-2">
-                  <span className={plan.bestValue ? "text-purple-500" : "text-[#ABF62D]"}>
-                    {plan.price}
-                  </span>
-                  <span className="text-[#888888] text-sm">
-                    {plan.smallText && (
-                      <>
-                        <span className="line-through mr-2">{plan.strikethrough}</span>
-                        {" "}
-                        {plan.period}
-                      </>
-                    )}
-                    {!plan.smallText && plan.period}
-                  </span>
-                </div>
-                <p className="text-[#888888]">{plan.period}</p>
-              </div>
-
-              {/* Features */}
-              <ul className="space-y-3 mb-8">
-                {plan.features.map((feature, idx) => (
-                  <li key={idx} className="flex items-start gap-3">
-                    <span className="text-[#ABF62D] mt-1">✓</span>
-                    <span className="text-white">{feature}</span>
-                  </li>
-                ))}
-              </ul>
-
-              {/* CTA Button */}
-              <Link
-                href={plan.name === "Free" ? "/builder" : "#"}
-                className={`block w-full text-center rounded-full py-3 font-bold transition-colors ${
-                  plan.popular
-                    ? "bg-[#ABF62D] text-black hover:bg-[#9fdf2a]"
-                    : plan.bestValue
-                    ? "bg-purple-500 text-white hover:bg-purple-600"
-                    : "bg-[#1a1a1a] text-white hover:bg-[#2a2a2a]"
-                }`}
-              >
-                {plan.buttonText}
-              </Link>
-            </motion.div>
-          ))}
+          <p className="text-white/60 text-lg">Start free. Upgrade when ready.</p>
         </div>
 
-        {/* FAQ Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-          className="max-w-3xl mx-auto"
-        >
-          <h2 className="text-3xl font-black text-center text-white mb-12">
+        <div className="grid gap-6 md:grid-cols-3 mb-16">
+          
+          {/* FREE */}
+          <div className="bg-[#111111] border border-white/10 rounded-2xl p-8 flex flex-col">
+            <div className="mb-6">
+              <h2 className="text-white font-bold text-xl mb-2">Free</h2>
+              <div className="flex items-end gap-1">
+                <span className="text-5xl font-black text-white">₹0</span>
+              </div>
+              <p className="text-[#888] text-sm mt-1">Forever free</p>
+            </div>
+            <ul className="space-y-3 flex-1 mb-8">
+              {["Resume builder","1 template","PDF download","Basic ATS check"].map(f => (
+                <li key={f} className="flex items-center gap-2 text-sm text-white/80">
+                  <span className="text-[#ABF62D]">✓</span>{f}
+                </li>
+              ))}
+              {["Multiple templates","Skill Score Card","Cover letter AI","Interview prep"].map(f => (
+                <li key={f} className="flex items-center gap-2 text-sm text-[#444] line-through">
+                  <span>✗</span>{f}
+                </li>
+              ))}
+            </ul>
+            <Link href="/builder" className="block text-center py-3 border border-white/30 text-white rounded-full font-bold hover:border-white transition-all">
+              Get Started Free
+            </Link>
+          </div>
+
+          {/* PRO MONTHLY */}
+          <div className="bg-[#111111] border-2 border-[#ABF62D] rounded-2xl p-8 flex flex-col relative">
+            <div className="absolute -top-4 left-1/2 -translate-x-1/2">
+              <span className="bg-[#ABF62D] text-black text-xs font-black px-4 py-1.5 rounded-full">MOST POPULAR</span>
+            </div>
+            <div className="mb-6">
+              <h2 className="text-white font-bold text-xl mb-2">Pro Monthly</h2>
+              <div className="flex items-end gap-1">
+                <span className="text-5xl font-black text-[#ABF62D]">₹20</span>
+              </div>
+              <p className="text-[#888] text-sm mt-1">per month</p>
+            </div>
+            <ul className="space-y-3 flex-1 mb-8">
+              {["Everything in Free","4 resume templates","Full ATS Score Checker","Skill Score Card","Job role suggestions","Share resume link"].map(f => (
+                <li key={f} className="flex items-center gap-2 text-sm text-white/80">
+                  <span className="text-[#ABF62D]">✓</span>{f}
+                </li>
+              ))}
+              {["Cover letter AI","Interview prep"].map(f => (
+                <li key={f} className="flex items-center gap-2 text-sm text-[#444] line-through">
+                  <span>✗</span>{f}
+                </li>
+              ))}
+            </ul>
+            <button className="block w-full text-center py-3 bg-[#ABF62D] text-black rounded-full font-bold hover:bg-[#9fdf2a] hover:shadow-[0_0_20px_rgba(171,246,45,0.4)] transition-all">
+              Start for ₹20/mo
+            </button>
+          </div>
+
+          {/* PRO YEARLY */}
+          <div className="bg-[#111111] border-2 border-[#D6A3FB] rounded-2xl p-8 flex flex-col relative">
+            <div className="absolute -top-4 left-1/2 -translate-x-1/2">
+              <span className="bg-[#D6A3FB] text-black text-xs font-black px-4 py-1.5 rounded-full">BEST VALUE</span>
+            </div>
+            <div className="mb-6">
+              <h2 className="text-white font-bold text-xl mb-2">Pro Yearly</h2>
+              <div className="flex items-end gap-1">
+                <span className="text-5xl font-black text-[#D6A3FB]">₹249</span>
+              </div>
+              <p className="text-[#888] text-sm mt-1">per year = ₹20.75/month</p>
+              <p className="text-[#555] text-xs line-through mt-0.5">₹240 if monthly</p>
+            </div>
+            <ul className="space-y-3 flex-1 mb-8">
+              {["Everything in Pro Monthly","Cover letter AI generator","Interview preparation","Priority support","Early access to features","Resume analytics"].map(f => (
+                <li key={f} className="flex items-center gap-2 text-sm text-white/80">
+                  <span className="text-[#D6A3FB]">✓</span>{f}
+                </li>
+              ))}
+            </ul>
+            <button className="block w-full text-center py-3 bg-[#D6A3FB] text-black rounded-full font-bold hover:shadow-[0_0_20px_rgba(214,163,251,0.4)] transition-all">
+              Get Yearly Plan
+            </button>
+          </div>
+
+        </div>
+
+        <p className="text-center text-[#888] text-sm mb-16">
+          Pro Yearly saves you money compared to paying monthly 🎉
+        </p>
+
+        {/* FAQ */}
+        <div className="max-w-2xl mx-auto">
+          <h2 className="text-2xl font-black text-white text-center mb-8" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
             Frequently Asked Questions
           </h2>
-          <div className="space-y-6">
-            {faqs.map((faq, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.6 + index * 0.1 }}
-                className="rounded-2xl border border-[#222222] bg-[#0f0f0f] p-6"
-              >
-                <h3 className="text-lg font-bold text-white mb-3">{faq.question}</h3>
-                <p className="text-[#888888] leading-relaxed">{faq.answer}</p>
-              </motion.div>
+          <div className="space-y-3">
+            {faqs.map((faq, i) => (
+              <div key={i} className="bg-[#111] border border-[#222] rounded-xl overflow-hidden">
+                <button
+                  onClick={() => setOpenFaq(openFaq === i ? null : i)}
+                  className="w-full flex items-center justify-between px-6 py-4 text-left"
+                >
+                  <span className="font-semibold text-white text-sm">{faq.q}</span>
+                  <span className={`text-[#ABF62D] transition-transform duration-200 ${openFaq === i ? "rotate-180" : ""}`}>
+                    ▼
+                  </span>
+                </button>
+                {openFaq === i && (
+                  <div className="px-6 pb-4">
+                    <p className="text-[#888] text-sm">{faq.a}</p>
+                  </div>
+                )}
+              </div>
             ))}
           </div>
-        </motion.div>
+        </div>
 
-        {/* CTA Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.8 }}
-          className="text-center mt-16"
-        >
-          <h2 className="text-3xl font-black text-white mb-4">
-            Ready to build your perfect resume?
-          </h2>
-          <p className="text-[#888888] mb-8">
-            Join thousands of professionals who've landed their dream jobs with YourValue.
-          </p>
-          <Link
-            href="/builder"
-            className="inline-flex items-center rounded-full bg-[#ABF62D] px-8 py-4 text-sm font-bold text-black hover:bg-[#9fdf2a] transition-colors"
-          >
-            Start Building Free →
-          </Link>
-        </motion.div>
+        <div className="text-center mt-16">
+          <h3 className="text-2xl font-black text-white mb-4" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
+            Ready to build your resume?
+          </h3>
+          <div className="flex gap-4 justify-center">
+            <Link href="/builder" className="px-8 py-3 bg-[#ABF62D] text-black font-bold rounded-full hover:scale-105 transition-all">
+              Start Building Free
+            </Link>
+            <Link href="/" className="px-8 py-3 border border-white/30 text-white font-bold rounded-full hover:border-white transition-all">
+              Back to Home
+            </Link>
+          </div>
+        </div>
+
       </div>
     </main>
   );
