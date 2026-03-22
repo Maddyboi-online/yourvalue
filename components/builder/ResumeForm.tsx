@@ -52,7 +52,7 @@ function SuggestInput({ value, placeholder, suggestions, onChange }: SuggestInpu
         }}
       />
       {open && filtered.length > 0 && (
-        <div className="absolute z-20 mt-1 max-h-[200px] w-full overflow-y-auto rounded-[12px] border border-[#ABF62D40] bg-[#1A1A2E] py-1 shadow-[0_8px_32px_rgba(0,0,0,0.4)]">
+        <div className="absolute z-20 mt-1 max-h-[200px] w-full overflow-y-auto rounded-[12px] border border-[#ABF62D40] bg-[#111111] py-1 shadow-[0_8px_32px_rgba(0,0,0,0.4)]">
           {filtered.map((item) => (
             <button
               key={item}
@@ -207,7 +207,7 @@ export default function ResumeForm({ initialData, onSubmit }: Props) {
                   className="input"
                   value={data.personal.fullName}
                   onChange={(e) => updatePersonal({ fullName: e.target.value })}
-                  placeholder="e.g., Madhavan R"
+                  placeholder="e.g., Arjun Sharma"
                   required
                 />
               </div>
@@ -227,7 +227,7 @@ export default function ResumeForm({ initialData, onSubmit }: Props) {
                   type="email"
                   value={data.personal.emailAddress}
                   onChange={(e) => updatePersonal({ emailAddress: e.target.value })}
-                  placeholder="e.g., you@email.com"
+                  placeholder="e.g., arjun@email.com"
                   required
                 />
               </div>
@@ -237,7 +237,7 @@ export default function ResumeForm({ initialData, onSubmit }: Props) {
                   className="input"
                   value={data.personal.cityState}
                   onChange={(e) => updatePersonal({ cityState: e.target.value })}
-                  placeholder="e.g., Chennai, Tamil Nadu"
+                  placeholder="e.g., Mumbai, Maharashtra"
                 />
               </div>
               <div className="md:col-span-2">
@@ -293,7 +293,9 @@ export default function ResumeForm({ initialData, onSubmit }: Props) {
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div>
-                      <p className="text-sm font-black text-[#ABF62D]">Education #{idx + 1}</p>
+                      <div className="flex h-[44px] w-[44px] items-center justify-center rounded-full bg-[#ABF62D] text-lg font-bold text-black">
+                        {idx + 1}
+                      </div>
                       <p className="text-xs font-semibold text-white/50">Fill the details.</p>
                     </div>
                     <button
@@ -432,7 +434,9 @@ export default function ResumeForm({ initialData, onSubmit }: Props) {
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div>
-                      <p className="text-sm font-black text-[#ABF62D]">Experience #{idx + 1}</p>
+                      <div className="flex h-[44px] w-[44px] items-center justify-center rounded-full bg-[#ABF62D] text-lg font-bold text-black">
+                        {idx + 1}
+                      </div>
                       <p className="text-xs font-semibold text-white/50">Add what you did in 3 bullets.</p>
                     </div>
                     <button
@@ -567,7 +571,9 @@ export default function ResumeForm({ initialData, onSubmit }: Props) {
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div>
-                      <p className="text-sm font-black text-[#ABF62D]">Certification #{idx + 1}</p>
+                      <div className="flex h-[44px] w-[44px] items-center justify-center rounded-full bg-[#ABF62D] text-lg font-bold text-black">
+                        {idx + 1}
+                      </div>
                       <p className="text-xs font-semibold text-white/50">Keep it concise and current.</p>
                     </div>
                     <button

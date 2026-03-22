@@ -25,7 +25,7 @@ export default function LandingPage() {
 
             <h1 className="text-5xl font-black leading-[1.05] text-white md:text-6xl" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>
               Discover Your{" "}
-              <span className="text-lime">True Value</span>
+              <span className="text-[#ABF62D]">True Value</span>
             </h1>
 
             <p className="text-base leading-relaxed text-white/60 md:text-lg">
@@ -134,56 +134,6 @@ export default function LandingPage() {
               </div>
               <p className="mt-3 text-sm leading-relaxed text-white/60">{step.desc}</p>
               <div className="mt-5 h-px w-14 bg-gradient-to-r from-lime to-purple opacity-60" />
-            </motion.div>
-          ))}
-        </div>
-      </section>
-
-      {/* Testimonials */}
-      <section className="container-x pt-16 md:pt-20">
-        <div className="space-y-2">
-          <p className="text-xs font-extrabold uppercase tracking-wider text-lime">Testimonials</p>
-          <h2 className="text-3xl font-black text-white md:text-4xl" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>
-            Loved by builders
-          </h2>
-        </div>
-        <div className="mt-7 grid gap-4 md:grid-cols-3">
-          {[
-            {
-              name: "Ananya K.",
-              role: "Career Switcher",
-              quote: "My resume looked instantly professional. The sections were so clean I didn't need to tweak anything.",
-            },
-            {
-              name: "Rahul S.",
-              role: "Fresh Graduate",
-              quote: "The form was simple and fast. The preview matched exactly what I wanted — modern and readable.",
-            },
-            {
-              name: "Meera V.",
-              role: "Internship Applicant",
-              quote: "Download-ready PDF in seconds. I sent it to recruiters right away and got great responses.",
-            },
-          ].map((t, i) => (
-            <motion.div
-              key={t.name}
-              initial={{ opacity: 0, y: 14 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.08, duration: 0.6 }}
-              className="rounded-3xl bg-white/5 p-6 ring-1 ring-white/10 hover:ring-purple/30 transition-all"
-            >
-              <div className="flex items-center justify-between">
-                <div className="space-y-1">
-                  <p className="text-sm font-extrabold text-white">{t.name}</p>
-                  <p className="text-xs font-semibold text-white/50">{t.role}</p>
-                </div>
-                <div className="text-lime" aria-hidden>
-                  {"★★★★★"}
-                </div>
-              </div>
-              <p className="mt-4 text-sm leading-relaxed text-white/60">"{t.quote}"</p>
-              <div className="mt-5 h-px w-20 bg-gradient-to-r from-lime to-purple opacity-60" />
             </motion.div>
           ))}
         </div>

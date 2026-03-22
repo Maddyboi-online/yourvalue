@@ -6,7 +6,7 @@ export default function SiteHeader() {
       <div className="container-x py-3">
         <div className="flex items-center justify-between gap-4">
           <Link href="/" className="flex items-center gap-2">
-            <span className="inline-flex h-9 w-9 items-center justify-center rounded-2xl bg-lime text-black font-black shadow-soft">
+            <span className="inline-flex h-9 w-9 items-center justify-center rounded-2xl bg-[#ABF62D] text-black font-black shadow-soft">
               YV
             </span>
             <div className="leading-tight">
@@ -27,7 +27,7 @@ export default function SiteHeader() {
           <div className="flex items-center gap-2">
             <Link
               href="/builder"
-              className="btn-primary btn hidden md:inline-flex"
+              className="btn text-base font-black px-6 py-3 bg-[#ABF62D] text-black hover:bg-[#9fdf2a] transition-all duration-300 hover:shadow-[0_0_20px_rgba(171,246,45,0.4)] hidden md:inline-flex"
               aria-label="Build My Resume Free"
             >
               Build My Resume Free

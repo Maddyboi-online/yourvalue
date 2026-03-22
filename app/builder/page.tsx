@@ -32,7 +32,7 @@ export default function BuilderPage() {
   };
 
   return (
-    <main className="bg-[#000000] pb-14 text-white [&_.input]:bg-[#111111] [&_.input]:text-white [&_.input]:placeholder:text-white/30 [&_.input]:border-white/10 [&_.input]:focus:border-[#ABF62D] [&_.input]:focus:ring-[#ABF62D]/30 [&_.label]:text-white [&_h1]:text-white [&_h2]:text-white [&_h3]:text-white [&_button]:bg-[#ABF62D] [&_button]:text-black [&_button]:ring-0 [&_button:hover]:bg-[#9fdf2a] [&_button:disabled]:opacity-60">
+    <main className="bg-black pb-14 text-white [&_.input]:bg-[#1a1a1a] [&_.input]:text-white [&_.input]:placeholder:text-white/30 [&_.input]:border-[#333333] [&_.input]:focus:border-[#ABF62D] [&_.input]:focus:ring-[#ABF62D]/30 [&_.label]:text-white [&_h1]:text-[#ABF62D] [&_h2]:text-[#ABF62D] [&_h3]:text-[#ABF62D] [&_button]:bg-[#ABF62D] [&_button]:text-black [&_button]:ring-0 [&_button:hover]:bg-[#9fdf2a] [&_button:disabled]:opacity-60 [&_.form-section]:bg-[#111111]">
       <div className="container-x pt-6">
         <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
           <div className="space-y-1">
