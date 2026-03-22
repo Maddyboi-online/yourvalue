@@ -424,6 +424,127 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* Pricing Section */}
+      <section className="py-20 bg-[#0a0a0a]">
+        <div className="container-x">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-black text-white mb-4" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>
+              Start free. Grow with us.
+            </h2>
+            <p className="text-lg text-white/60 mb-8">
+              Choose the perfect plan for your career journey
+            </p>
+          </div>
+
+          <div className="grid gap-6 md:grid-cols-3 mb-12">
+            <div className="bg-[#111111] rounded-2xl p-6 border border-white/10 hover:border-white/20 transition-all">
+              <h3 className="text-xl font-black text-white mb-2">Free</h3>
+              <div className="text-3xl font-black text-[#ABF62D] mb-2">₹0</div>
+              <p className="text-white/60 mb-4">Forever free</p>
+              <ul className="space-y-2 text-white/80">
+                <li className="flex items-center gap-2">
+                  <span className="text-[#ABF62D]">✓</span>
+                  Resume builder
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="text-[#ABF62D]">✓</span>
+                  PDF download
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="text-[#ABF62D]">✓</span>
+                  Basic templates
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="text-[#ABF62D]">✓</span>
+                  ATS score checker
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="text-[#ABF62D]">✓</span>
+                  Skill score card
+                </li>
+              </ul>
+              <Link
+                href="/builder"
+                className="block w-full py-3 bg-white/10 text-white rounded-lg hover:bg-white/20 transition-all text-center"
+              >
+                Get Started
+              </Link>
+            </div>
+
+            <div className="bg-[#111111] rounded-2xl p-6 border-2 border-[#ABF62D] hover:scale-105 transition-all">
+              <div className="flex justify-between items-start mb-4">
+                <h3 className="text-xl font-black text-white">Pro</h3>
+                <span className="bg-[#ABF62D] text-black text-xs font-bold px-3 py-1 rounded-full">
+                  MOST POPULAR
+                </span>
+              </div>
+              <div className="text-3xl font-black text-[#ABF62D] mb-2">₹20</div>
+              <p className="text-white/60 mb-4">per month</p>
+              <ul className="space-y-2 text-white/80">
+                <li className="flex items-center gap-2">
+                  <span className="text-[#ABF62D]">✓</span>
+                  Everything in Free
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="text-[#ABF62D]">✓</span>
+                  4 resume templates
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="text-[#ABF62D]">✓</span>
+                  Full ATS Score Checker
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="text-[#ABF62D]">✓</span>
+                  Skill Score Card
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="text-[#ABF62D]">✓</span>
+                  Job role suggestions
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="text-[#ABF62D]">✓</span>
+                  Share resume link
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="text-[#ABF62D]">✓</span>
+                  Dark/Light mode
+                </li>
+              </ul>
+              <Link
+                href="/pricing"
+                className="block w-full py-3 bg-[#ABF62D] text-black font-bold rounded-lg hover:bg-[#9fdf2a] transition-all text-center"
+              >
+                View Pro Features
+              </Link>
+            </div>
+
+            <div className="bg-[#111111] rounded-2xl p-6 border border-white/10 hover:border-white/20 transition-all">
+              <div className="text-center mb-4">
+                <h3 className="text-xl font-black text-white mb-2">Team</h3>
+                <p className="text-white/60">For teams and agencies</p>
+              </div>
+              <div className="text-3xl font-black text-white mb-2">Contact Us</div>
+              <p className="text-white/60 mb-4">Custom pricing for teams</p>
+              <Link
+                href="/pricing"
+                className="block w-full py-3 bg-white/10 text-white rounded-lg hover:bg-white/20 transition-all text-center"
+              >
+                Get Quote
+              </Link>
+            </div>
+          </div>
+
+          <div className="text-center">
+            <Link
+              href="/pricing"
+              className="inline-flex items-center px-8 py-3 bg-white/10 text-white font-bold rounded-xl hover:bg-white/20 transition-all"
+            >
+              View All Plans
+            </Link>
+          </div>
+        </div>
+      </section>
+
     </main>
   );
 }

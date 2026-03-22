@@ -34,6 +34,15 @@ export default function SiteHeader() {
               <Link href="/scorecard" className="font-semibold text-white/70 hover:text-lime transition-colors">
                 Score Card
               </Link>
+              <Link href="/pricing" className="font-semibold text-white/70 hover:text-lime transition-colors">
+                Pricing
+              </Link>
+              <Link href="/cover-letter" className="font-semibold text-white/70 hover:text-lime transition-colors">
+                Cover Letter
+              </Link>
+              <Link href="/interview" className="font-semibold text-white/70 hover:text-lime transition-colors">
+                Interview Prep
+              </Link>
             </nav>
 
             <div className="flex items-center gap-2">
@@ -105,6 +114,27 @@ export default function SiteHeader() {
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Score Card
+              </Link>
+              <Link
+                href="/pricing"
+                className="text-white font-semibold hover:text-[#ABF62D] transition-colors"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Pricing
+              </Link>
+              <Link
+                href="/cover-letter"
+                className="text-white font-semibold hover:text-[#ABF62D] transition-colors"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Cover Letter
+              </Link>
+              <Link
+                href="/interview"
+                className="text-white font-semibold hover:text-[#ABF62D] transition-colors"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Interview Prep
               </Link>
               <Link
                 href="/builder"
