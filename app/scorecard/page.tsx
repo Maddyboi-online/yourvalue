@@ -4,7 +4,6 @@ import { useState, useEffect, Suspense } from "react";
 import { motion } from "framer-motion";
 import { useRouter, useSearchParams } from "next/navigation";
 import { getEmptyResumeData, RESUME_STORAGE_KEY, type ResumeData } from "@/lib/resumeTypes";
-import { supabase } from "@/lib/supabase";
 
 interface ScoreData {
   total: number;
@@ -33,39 +32,20 @@ function ScoreCardContent() {
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    const loadData = async () => {
-      const editingResumeId = searchParams.get('resume');
-      
-      if (editingResumeId) {
-        // Load from Supabase
-        const { data: { session } } = await supabase.auth.getSession();
-        if (session) {
-          const { data: resume } = await supabase
-            .from('resumes')
-            .select('data')
-            .eq('id', editingResumeId)
-            .eq('user_id', session.user.id)
-            .single();
-          
-          if (resume) {
-            setResumeData(resume.data);
-          }
+    const loadData = () => {
+      // Load from localStorage only
+      try {
+        const raw = localStorage.getItem(RESUME_STORAGE_KEY);
+        if (raw) {
+          setResumeData(JSON.parse(raw) as ResumeData);
         }
-      } else {
-        // Load from localStorage
-        try {
-          const raw = localStorage.getItem(RESUME_STORAGE_KEY);
-          if (raw) {
-            setResumeData(JSON.parse(raw) as ResumeData);
-          }
-        } catch {}
-      }
+      } catch {}
       
       setLoaded(true);
     };
 
     loadData();
-  }, [searchParams]);
+  }, []);
 
   useEffect(() => {
     if (loaded) {

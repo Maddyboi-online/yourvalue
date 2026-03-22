@@ -112,27 +112,130 @@ export default function LandingPage() {
       <section className="bg-[#0a0a0a] py-8">
         <div className="container-x">
           <div className="text-center mb-6">
-            <p className="text-xs font-extrabold uppercase tracking-wider text-white/50">Trusted by students from</p>
+            <p className="text-xs font-extrabold uppercase tracking-wider text-white/50">Students from top companies trust us</p>
           </div>
-          <div className="overflow-hidden">
-            <div className="flex animate-scroll gap-8 text-white/30 text-sm whitespace-nowrap md:justify-center">
+          <div className="marquee-container overflow-hidden">
+            <div className="animate-marquee flex gap-8 text-white/40 text-sm whitespace-nowrap">
+              {/* First set of companies */}
               <span>TCS</span>
-              <span>•</span>
+              <span className="text-[#ABF62D]">•</span>
               <span>Infosys</span>
-              <span>•</span>
+              <span className="text-[#ABF62D]">•</span>
               <span>Wipro</span>
-              <span>•</span>
+              <span className="text-[#ABF62D]">•</span>
+              <span>HCL</span>
+              <span className="text-[#ABF62D]">•</span>
               <span>Google</span>
-              <span>•</span>
+              <span className="text-[#ABF62D]">•</span>
+              <span>Microsoft</span>
+              <span className="text-[#ABF62D]">•</span>
               <span>Amazon</span>
-              <span>•</span>
+              <span className="text-[#ABF62D]">•</span>
               <span>Flipkart</span>
-              <span>•</span>
+              <span className="text-[#ABF62D]">•</span>
               <span>Zomato</span>
-              <span>•</span>
+              <span className="text-[#ABF62D]">•</span>
+              <span>Swiggy</span>
+              <span className="text-[#ABF62D]">•</span>
+              <span>Razorpay</span>
+              <span className="text-[#ABF62D]">•</span>
               <span>Freshworks</span>
-              <span>•</span>
+              <span className="text-[#ABF62D]">•</span>
               <span>Zoho</span>
+              <span className="text-[#ABF62D]">•</span>
+              <span>IBM</span>
+              <span className="text-[#ABF62D]">•</span>
+              <span>Accenture</span>
+              <span className="text-[#ABF62D]">•</span>
+              <span>Deloitte</span>
+              <span className="text-[#ABF62D]">•</span>
+              <span>HDFC Bank</span>
+              <span className="text-[#ABF62D]">•</span>
+              <span>ICICI Bank</span>
+              <span className="text-[#ABF62D]">•</span>
+              <span>Cognizant</span>
+              <span className="text-[#ABF62D]">•</span>
+              <span>Tech Mahindra</span>
+              <span className="text-[#ABF62D]">•</span>
+              <span>Byju's</span>
+              <span className="text-[#ABF62D]">•</span>
+              <span>Unacademy</span>
+              <span className="text-[#ABF62D]">•</span>
+              <span>Meesho</span>
+              <span className="text-[#ABF62D]">•</span>
+              <span>Ola</span>
+              <span className="text-[#ABF62D]">•</span>
+              <span>Uber</span>
+              <span className="text-[#ABF62D]">•</span>
+              <span>PhonePe</span>
+              <span className="text-[#ABF62D]">•</span>
+              <span>Paytm</span>
+              <span className="text-[#ABF62D]">•</span>
+              <span>CRED</span>
+              <span className="text-[#ABF62D]">•</span>
+              <span>Zerodha</span>
+              <span className="text-[#ABF62D]">•</span>
+              <span>Groww</span>
+              {/* Duplicate set for seamless loop */}
+              <span>TCS</span>
+              <span className="text-[#ABF62D]">•</span>
+              <span>Infosys</span>
+              <span className="text-[#ABF62D]">•</span>
+              <span>Wipro</span>
+              <span className="text-[#ABF62D]">•</span>
+              <span>HCL</span>
+              <span className="text-[#ABF62D]">•</span>
+              <span>Google</span>
+              <span className="text-[#ABF62D]">•</span>
+              <span>Microsoft</span>
+              <span className="text-[#ABF62D]">•</span>
+              <span>Amazon</span>
+              <span className="text-[#ABF62D]">•</span>
+              <span>Flipkart</span>
+              <span className="text-[#ABF62D]">•</span>
+              <span>Zomato</span>
+              <span className="text-[#ABF62D]">•</span>
+              <span>Swiggy</span>
+              <span className="text-[#ABF62D]">•</span>
+              <span>Razorpay</span>
+              <span className="text-[#ABF62D]">•</span>
+              <span>Freshworks</span>
+              <span className="text-[#ABF62D]">•</span>
+              <span>Zoho</span>
+              <span className="text-[#ABF62D]">•</span>
+              <span>IBM</span>
+              <span className="text-[#ABF62D]">•</span>
+              <span>Accenture</span>
+              <span className="text-[#ABF62D]">•</span>
+              <span>Deloitte</span>
+              <span className="text-[#ABF62D]">•</span>
+              <span>HDFC Bank</span>
+              <span className="text-[#ABF62D]">•</span>
+              <span>ICICI Bank</span>
+              <span className="text-[#ABF62D]">•</span>
+              <span>Cognizant</span>
+              <span className="text-[#ABF62D]">•</span>
+              <span>Tech Mahindra</span>
+              <span className="text-[#ABF62D]">•</span>
+              <span>Byju's</span>
+              <span className="text-[#ABF62D]">•</span>
+              <span>Unacademy</span>
+              <span className="text-[#ABF62D]">•</span>
+              <span>Meesho</span>
+              <span className="text-[#ABF62D]">•</span>
+              <span>Ola</span>
+              <span className="text-[#ABF62D]">•</span>
+              <span>Uber</span>
+              <span className="text-[#ABF62D]">•</span>
+              <span>PhonePe</span>
+              <span className="text-[#ABF62D]">•</span>
+              <span>Paytm</span>
+              <span className="text-[#ABF62D]">•</span>
+              <span>CRED</span>
+              <span className="text-[#ABF62D]">•</span>
+              <span>Zerodha</span>
+              <span className="text-[#ABF62D]">•</span>
+              <span>Groww</span>
             </div>
           </div>
         </div>

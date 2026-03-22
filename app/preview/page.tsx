@@ -1,13 +1,11 @@
 "use client";
 
+import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useMemo, useState, Suspense } from "react";
 import { motion } from "framer-motion";
 import { getEmptyResumeData, RESUME_STORAGE_KEY, type ResumeData } from "@/lib/resumeTypes";
 import ResumePreview from "@/components/resume/ResumePreview";
 import PdfDownloadButton from "@/components/resume/PdfDownloadButton";
-import SiteFooter from "@/components/SiteFooter";
-import { supabase } from "@/lib/supabase";
 import ClassicTemplate from "@/components/resume/templates/ClassicTemplate";
 import ModernTemplate from "@/components/resume/templates/ModernTemplate";
 import MinimalTemplate from "@/components/resume/templates/MinimalTemplate";
@@ -28,44 +26,17 @@ function PreviewContent() {
   const [data, setData] = useState<ResumeData>(getEmptyResumeData);
   const [loaded, setLoaded] = useState(false);
   const [selectedTemplate, setSelectedTemplate] = useState<TemplateType>('classic');
-  const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
-    const loadData = async () => {
-      const editingResumeId = searchParams.get('resume');
-      
-      if (editingResumeId) {
-        // Load from Supabase
-        const { data: { session } } = await supabase.auth.getSession();
-        if (!session) {
-          router.push('/auth');
-          return;
+    const loadData = () => {
+      // Load from localStorage only
+      try {
+        const raw = localStorage.getItem(RESUME_STORAGE_KEY);
+        if (raw) {
+          setData(JSON.parse(raw) as ResumeData);
         }
-
-        const { data: resume, error } = await supabase
-          .from('resumes')
-          .select('*')
-          .eq('id', editingResumeId)
-          .eq('user_id', session.user.id)
-          .single();
-
-        if (error || !resume) {
-          router.push('/dashboard');
-          return;
-        }
-
-        setData(resume.data);
-        setUser(session.user);
-      } else {
-        // Load from localStorage
-        try {
-          const raw = localStorage.getItem(RESUME_STORAGE_KEY);
-          if (raw) {
-            setData(JSON.parse(raw) as ResumeData);
-          }
-        } catch {
-          setData(getEmptyResumeData());
-        }
+      } catch {
+        setData(getEmptyResumeData());
       }
       
       setLoaded(true);
@@ -74,14 +45,14 @@ function PreviewContent() {
     loadData();
   }, [searchParams, router]);
 
-  const hasAny = useMemo(() => {
+  const hasAny = () => {
     return (
       data.personal.fullName.trim() ||
       data.personal.emailAddress.trim() ||
       data.education.some((e) => e.schoolCollegeName.trim() || e.degreeOrClass.trim()) ||
       data.workExperience.some((w) => w.companyOrInternshipName.trim() || w.yourRoleOrPosition.trim())
     );
-  }, [data]);
+  };
 
   const handleClear = () => {
     localStorage.removeItem(RESUME_STORAGE_KEY);
@@ -114,7 +85,7 @@ function PreviewContent() {
 
         {!loaded ? (
           <div className="mt-8 rounded-3xl bg-[#111111] p-8 ring-1 ring-white/10 shadow-soft" />
-        ) : !hasAny ? (
+        ) : !hasAny() ? (
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -141,27 +112,13 @@ function PreviewContent() {
                 {templates.map((template) => (
                   <div
                     key={template.id}
-                    onClick={() => {
-                      if (template.id === 'classic' || user) {
-                        setSelectedTemplate(template.id as TemplateType);
-                      }
-                    }}
-                    className={`relative cursor-pointer rounded-2xl p-4 border-2 transition-all ${
+                    onClick={() => setSelectedTemplate(template.id as TemplateType)}
+                    className={`cursor-pointer rounded-2xl p-4 border-2 transition-all ${
                       selectedTemplate === template.id
                         ? 'border-[#ABF62D] shadow-[0_0_20px_rgba(171,246,45,0.3)]'
                         : 'border-white/20 hover:border-white/40'
-                    } ${(template.id !== 'classic' && !user) ? 'opacity-50' : ''}`}
+                    }`}
                   >
-                    {(template.id !== 'classic' && !user) && (
-                      <div className="absolute top-2 right-2">
-                        <span className="inline-flex items-center gap-1 px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs rounded-full">
-                          <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
-                          </svg>
-                          Pro
-                        </span>
-                      </div>
-                    )}
                     <div className="aspect-[3/4] bg-gray-800 rounded-lg mb-3 flex items-center justify-center">
                       <span className="text-white/50 text-sm">{template.name}</span>
                     </div>
@@ -203,8 +160,6 @@ function PreviewContent() {
           </div>
         )}
       </div>
-
-      <SiteFooter />
     </main>
   );
 }
@@ -216,4 +171,3 @@ export default function PreviewPage() {
     </Suspense>
   );
 }
-

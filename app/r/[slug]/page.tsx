@@ -1,12 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { notFound } from "next/navigation";
 import { useParams } from "next/navigation";
-import { supabase } from "@/lib/supabase";
+import { getEmptyResumeData, RESUME_STORAGE_KEY, type ResumeData } from "@/lib/resumeTypes";
 import ResumePreview from "@/components/resume/ResumePreview";
 import PdfDownloadButton from "@/components/resume/PdfDownloadButton";
 import ClassicTemplate from "@/components/resume/templates/ClassicTemplate";
-import type { ResumeData } from "@/lib/resumeTypes";
 
 export default function PublicResumePage() {
   const params = useParams();
@@ -15,7 +15,7 @@ export default function PublicResumePage() {
   const [notFound, setNotFound] = useState(false);
 
   useEffect(() => {
-    const loadPublicResume = async () => {
+    const loadResume = async () => {
       const slug = params.slug as string;
       
       if (!slug) {
@@ -24,27 +24,22 @@ export default function PublicResumePage() {
         return;
       }
 
+      // For now, load from localStorage only
       try {
-        const { data, error } = await supabase
-          .from('resumes')
-          .select('data')
-          .eq('share_slug', slug)
-          .eq('is_public', true)
-          .single();
-
-        if (error || !data) {
-          setNotFound(true);
+        const raw = localStorage.getItem(RESUME_STORAGE_KEY);
+        if (raw) {
+          setResume(JSON.parse(raw) as ResumeData);
         } else {
-          setResume(data.data);
+          setResume(getEmptyResumeData());
         }
-      } catch (error) {
-        setNotFound(true);
-      } finally {
-        setLoading(false);
+      } catch {
+        setResume(getEmptyResumeData());
       }
+      
+      setLoading(false);
     };
 
-    loadPublicResume();
+    loadResume();
   }, [params.slug]);
 
   if (loading) {
