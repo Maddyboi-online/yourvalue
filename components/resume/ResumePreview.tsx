@@ -48,9 +48,24 @@ export default function ResumePreview({ data, template }: Props) {
         <div className="relative">
           <div className="absolute left-0 top-0 h-3 w-full bg-gradient-to-r from-saffron to-deepblue/80" />
           <div className="pt-4">
-            <h1 className="text-[20px] font-black leading-tight text-deepblue md:text-[24px]">
-              {personal.fullName || "Your Name"}
-            </h1>
+            <div className="flex justify-between items-start">
+              <div className="flex-1">
+                <h1 className="text-[20px] font-black leading-tight text-deepblue md:text-[24px]">
+                  {personal.fullName || "Your Name"}
+                </h1>
+              </div>
+              
+              {/* Profile Photo */}
+              {personal.profilePhoto ? (
+                <div className="relative" style={{ width: 80, height: 80, marginLeft: 20 }}>
+                  <img 
+                    src={personal.profilePhoto} 
+                    alt="Profile" 
+                    className="w-full h-full rounded-full object-cover"
+                  />
+                </div>
+              ) : null}
+            </div>
 
             <div className="mt-2 flex flex-wrap gap-x-5 gap-y-2">
               <ContactLine label="Phone" value={personal.phoneNumber} />

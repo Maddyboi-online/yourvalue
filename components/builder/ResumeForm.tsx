@@ -5,6 +5,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import type { ResumeData, ResumeEducation, ResumeWorkExperience, ResumeCertification } from "@/lib/resumeTypes";
 import { getEmptyResumeData } from "@/lib/resumeTypes";
 import TagInput from "@/components/builder/TagInput";
+import Cropper from "react-easy-crop";
 
 type Props = {
   initialData: ResumeData;
@@ -76,32 +77,33 @@ function SuggestInput({ value, placeholder, suggestions, onChange }: SuggestInpu
 
 export default function ResumeForm({ initialData, onSubmit, onDataChange }: Props) {
   const technicalSkillSuggestions = [
+    "HTML/CSS",
     "JavaScript",
+    "Microsoft Office",
+    "Git",
     "Python",
     "React",
-    "Node.js",
-    "SQL",
     "TypeScript",
-    "HTML/CSS",
-    "Git",
-    "AWS",
+    "SQL",
+    "Node.js",
     "MongoDB",
-    "Next.js",
-    "Flutter",
-    "Java",
-    "C++",
+    "Docker",
+    "AWS",
     "Figma",
   ];
+
   const softSkillSuggestions = [
-    "Leadership",
     "Communication",
+    "Team Work",
     "Problem Solving",
-    "Team Management",
-    "Critical Thinking",
     "Time Management",
+    "Leadership",
+    "Critical Thinking",
     "Creativity",
     "Adaptability",
+    "Project Management",
   ];
+
   const languageSuggestions = [
     "English",
     "Hindi",
@@ -143,7 +145,24 @@ export default function ResumeForm({ initialData, onSubmit, onDataChange }: Prop
     "Accenture",
   ];
 
+  const certificateSuggestions = [
+    "Google Digital Marketing",
+    "AWS Cloud Practitioner",
+    "Meta Frontend Developer",
+    "Google Data Analytics",
+    "IBM Data Science",
+    "Microsoft Azure Fundamentals",
+    "Coursera Python",
+    "HackerRank JavaScript",
+    "Udemy React Complete Guide",
+    "NPTEL Programming",
+  ];
+
   const [data, setData] = useState<ResumeData>(initialData);
+  const [showCropModal, setShowCropModal] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [croppedImage, setCroppedImage] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const hasAtLeastOneEducation = useMemo(() => data.education.length > 0, [data.education.length]);
   const hasAtLeastOneWork = useMemo(() => data.workExperience.length > 0, [data.workExperience.length]);
@@ -190,6 +209,30 @@ export default function ResumeForm({ initialData, onSubmit, onDataChange }: Prop
     });
   };
 
+  const handlePhotoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file && (file.type === 'image/jpeg' || file.type === 'image/png' || file.type === 'image/webp')) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setSelectedImage(e.target?.result as string);
+        setShowCropModal(true);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleCropComplete = (croppedImage: string) => {
+    setCroppedImage(croppedImage);
+    setShowCropModal(false);
+    updatePersonal({ profilePhoto: croppedImage });
+  };
+
+  const handleRemovePhoto = () => {
+    setCroppedImage(null);
+    setSelectedImage(null);
+    updatePersonal({ profilePhoto: null });
+  };
+
   return (
     <div className="container-x py-8 md:py-12">
       <div className="flex flex-col gap-2">
@@ -200,7 +243,7 @@ export default function ResumeForm({ initialData, onSubmit, onDataChange }: Prop
         </p>
       </div>
 
-      <div className="mt-6 rounded-[24px] border border-[rgba(171,246,45,0.2)] bg-[#111111] p-4 shadow-soft md:p-6">
+      <div className="mt-6 rounded-[24px] border border-[var(--border)] bg-[var(--card)] p-4 shadow-soft md:p-6">
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -212,15 +255,64 @@ export default function ResumeForm({ initialData, onSubmit, onDataChange }: Prop
           <section className="space-y-4">
             <div className="flex items-end justify-between gap-4">
               <div>
-                <p className="text-sm font-black text-[#ABF62D]">Personal Info</p>
-                <p className="text-xs font-semibold text-white/50">Basic details recruiters look for.</p>
+                <p className="text-sm font-black text-[var(--add-btn)]">Personal Info</p>
+                <p className="text-xs font-semibold text-[var(--text-muted)]">Basic details recruiters look for.</p>
               </div>
-              <div className="h-px w-16 bg-gradient-to-r from-saffron to-deepblue/40 opacity-60" />
+              <div className="h-px w-16 bg-gradient-to-r from-[var(--add-btn)] to-[var(--text-muted)] opacity-60" />
             </div>
 
             <div className="grid gap-4 md:grid-cols-2">
+              {/* Photo Upload Section */}
+              <div className="md:col-span-2">
+                <label className="label text-[var(--label-text)]">Profile Photo (Optional)</label>
+                <div className="flex items-center gap-4">
+                  {/* Photo Upload Circle */}
+                  <div 
+                    className="relative w-[100px] h-[100px] rounded-full border-2 border-dashed border-[#ABF62D] bg-[#1a1a1a] flex items-center justify-center cursor-pointer hover:border-[#ABF62D] transition-colors"
+                    onClick={() => fileInputRef.current?.click()}
+                  >
+                    {croppedImage ? (
+                      <img 
+                        src={croppedImage} 
+                        alt="Profile" 
+                        className="w-full h-full rounded-full object-cover"
+                      />
+                    ) : (
+                      <svg className="w-6 h-6 text-[#ABF62D]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0 0h6m-6 0v6m0 0h6" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h6a2 2 0 002-2z" />
+                      </svg>
+                    )
+                  }
+                  <div className="flex-1">
+                    <p className="text-[#888888] text-sm mb-2">Add Photo (Optional)</p>
+                    {croppedImage && (
+                      <div className="flex items-center gap-2">
+                        <button
+                          type="button"
+                          className="text-[#888888] hover:text-white text-xs underline"
+                          onClick={handleRemovePhoto}
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+                
+                {/* Hidden File Input */}
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp"
+                  onChange={handlePhotoUpload}
+                  className="hidden"
+                />
+              </div>
+              
+              {/* Name Input */}
               <div>
-                <label className="label">Full Name</label>
+                <label className="label text-[var(--label-text)]">Full Name</label>
                 <input
                   className="input"
                   value={data.personal.fullName}
@@ -230,7 +322,7 @@ export default function ResumeForm({ initialData, onSubmit, onDataChange }: Prop
                 />
               </div>
               <div>
-                <label className="label">Phone Number</label>
+                <label className="label text-[var(--label-text)]">Phone Number</label>
                 <input
                   className="input"
                   value={data.personal.phoneNumber}
@@ -239,7 +331,7 @@ export default function ResumeForm({ initialData, onSubmit, onDataChange }: Prop
                 />
               </div>
               <div>
-                <label className="label">Email Address</label>
+                <label className="label text-[var(--label-text)]">Email Address</label>
                 <input
                   className="input"
                   type="email"
@@ -250,7 +342,7 @@ export default function ResumeForm({ initialData, onSubmit, onDataChange }: Prop
                 />
               </div>
               <div>
-                <label className="label">City and State</label>
+                <label className="label text-[var(--label-text)]">City and State</label>
                 <input
                   className="input"
                   value={data.personal.cityState}
@@ -259,7 +351,7 @@ export default function ResumeForm({ initialData, onSubmit, onDataChange }: Prop
                 />
               </div>
               <div className="md:col-span-2">
-                <label className="label">LinkedIn URL (optional)</label>
+                <label className="label text-[var(--label-text)]">LinkedIn URL (optional)</label>
                 <input
                   className="input"
                   value={data.personal.linkedInUrl ?? ""}
@@ -637,10 +729,11 @@ export default function ResumeForm({ initialData, onSubmit, onDataChange }: Prop
                   <div className="mt-4 grid gap-4 md:grid-cols-3">
                     <div className="md:col-span-2">
                       <label className="label">Certificate Name</label>
-                      <input
-                        className="input"
+                      <SuggestInput
                         value={c.certificateName}
-                        onChange={(e) => updateCertification(idx, { certificateName: e.target.value })}
+                        placeholder="e.g., AWS Cloud Practitioner"
+                        suggestions={certificateSuggestions}
+                        onChange={(value) => updateCertification(idx, { certificateName: value })}
                       />
                     </div>
                     <div>
@@ -709,6 +802,58 @@ export default function ResumeForm({ initialData, onSubmit, onDataChange }: Prop
           </div>
         </form>
       </div>
+    </div>
+
+      {/* Crop Modal */}
+      {showCropModal && selectedImage && (
+        <div className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl p-6 max-w-lg w-full max-w-md">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-xl font-semibold text-gray-900">Crop Your Photo</h3>
+              <button
+                onClick={() => setShowCropModal(false)}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                ✕
+              </button>
+            </div>
+            
+            <div className="relative">
+              <Cropper
+                image={selectedImage}
+                aspect={1}
+                cropShape="round"
+                showGrid={true}
+                minZoom={1}
+                maxZoom={3}
+                onComplete={handleCropComplete}
+                className="max-h-[400px]"
+              />
+            </div>
+            
+            <div className="flex justify-between gap-4 mt-6">
+              <button
+                onClick={() => setShowCropModal(false)}
+                className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  const canvas = document.querySelector('canvas');
+                  if (canvas) {
+                    const croppedImage = canvas.toDataURL('image/jpeg', 0.8);
+                    handleCropComplete(croppedImage);
+                  }
+                }}
+                className="flex-1 px-4 py-2 bg-[#ABF62D] text-black font-medium rounded-lg hover:bg-[#9fdf2a]"
+              >
+                Use Photo
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

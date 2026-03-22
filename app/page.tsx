@@ -2,8 +2,30 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { useState, useEffect } from "react";
 
 export default function LandingPage() {
+  const [counter, setCounter] = useState(0);
+
+  useEffect(() => {
+    const target = 2847;
+    const duration = 2000;
+    const increment = target / (duration / 16);
+    let current = 0;
+
+    const timer = setInterval(() => {
+      current += increment;
+      if (current >= target) {
+        setCounter(target);
+        clearInterval(timer);
+      } else {
+        setCounter(Math.floor(current));
+      }
+    }, 16);
+
+    return () => clearInterval(timer);
+  }, []);
+
   return (
     <main className="pb-6 bg-black">
       {/* Hero */}
@@ -16,19 +38,18 @@ export default function LandingPage() {
         >
           <div className="space-y-5">
             <div
-              className="inline-flex items-center gap-2 rounded-full border border-[#ABF62D] bg-[#ABF62D]/10 px-4 py-2 text-sm font-extrabold tracking-wide text-[#ABF62D]"
-              style={{ textShadow: "0 0 10px rgba(171, 246, 45, 0.45)" }}
+              className="inline-flex items-center gap-2 rounded-full border border-[#ABF62D] bg-transparent px-4 py-2 text-sm font-extrabold tracking-wide text-[#ABF62D]"
             >
-              <span className="inline-flex h-2 w-2 rounded-full bg-[#ABF62D]" />
+              <span className="inline-flex h-2 w-2 rounded-full bg-[#ABF62D] animate-pulse" />
               Discover Who You Really Are
             </div>
 
-            <h1 className="text-5xl font-black leading-[1.05] text-white md:text-6xl" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>
+            <h1 className="text-5xl font-black leading-[1.05] text-[#F5F5F5] md:text-6xl" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>
               Discover Your{" "}
               <span className="text-[#ABF62D]">True Value</span>
             </h1>
 
-            <p className="text-base leading-relaxed text-white/60 md:text-lg">
+            <p className="text-base leading-relaxed text-[#9ca3af] md:text-lg">
               Build your professional resume in 5 minutes <br /> and discover skills you never knew you had
             </p>
 
@@ -42,22 +63,22 @@ export default function LandingPage() {
             </div>
             
             <div className="mt-4 flex flex-wrap gap-2">
-              <div className="rounded-full bg-white/20 px-3 py-1 text-xs font-medium text-white flex items-center gap-1">
+              <div className="rounded-full bg-[#111111] px-3 py-1 text-xs font-medium text-[#888888] flex items-center gap-1">
                 <span className="text-[#ABF62D]">✓</span>
                 100% Free
               </div>
-              <div className="rounded-full bg-white/20 px-3 py-1 text-xs font-medium text-white flex items-center gap-1">
+              <div className="rounded-full bg-[#111111] px-3 py-1 text-xs font-medium text-[#888888] flex items-center gap-1">
                 <span className="text-[#ABF62D]">✓</span>
                 No Signup Required
               </div>
-              <div className="rounded-full bg-white/20 px-3 py-1 text-xs font-medium text-white flex items-center gap-1">
+              <div className="rounded-full bg-[#111111] px-3 py-1 text-xs font-medium text-[#888888] flex items-center gap-1">
                 <span className="text-[#ABF62D]">✓</span>
                 Instant PDF Download
               </div>
             </div>
             
-            <div className="mt-3 text-sm text-white/60">
-              🔥 2,847 resumes built this week
+            <div className="mt-3 text-sm text-[#888888]">
+              🔥 <span className="text-[#ABF62D]">{counter.toLocaleString()}</span> resumes built this week
             </div>
           </div>
 

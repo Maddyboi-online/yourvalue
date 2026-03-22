@@ -5,7 +5,8 @@ import Link from "next/link";
 
 export default function PricingPage() {
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
-
+  const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
+  
   const plans = [
     {
       name: "Free",
@@ -23,13 +24,13 @@ export default function PricingPage() {
       buttonText: "Get Started",
       buttonHref: "/builder",
       popular: false,
-      background: "#111111",
-      border: "white/10"
+      background: "#0f0f0f",
+      border: "#222222"
     },
     {
-      name: "Pro",
-      price: billingCycle === "monthly" ? "₹199" : "₹1,999",
-      period: billingCycle === "monthly" ? "per month" : "per year",
+      name: "Pro Monthly",
+      price: "₹20",
+      period: "per month",
       description: "For serious job seekers",
       features: [
         "Everything in Free",
@@ -41,32 +42,32 @@ export default function PricingPage() {
         "Export to Word/Docs",
         "Custom domains"
       ],
-      buttonText: "Start Free Trial",
+      buttonText: "Start for ₹20/mo",
       buttonHref: "/auth",
       popular: true,
       background: "linear-gradient(135deg, #ABF62D 0%, #9fdf2a 100%)",
       border: "#ABF62D"
     },
     {
-      name: "Team",
-      price: billingCycle === "monthly" ? "₹499" : "₹4,999",
-      period: billingCycle === "monthly" ? "per month" : "per year",
-      description: "For teams and agencies",
+      name: "Pro Yearly",
+      price: "₹249",
+      period: "per year",
+      smallText: "Just ₹20.75/month",
+      strikethrough: "₹240/year",
+      description: "Best value for committed professionals",
       features: [
-        "Everything in Pro",
-        "Team collaboration",
-        "Bulk resume creation",
-        "White-label options",
-        "API access",
-        "Dedicated support",
-        "Custom integrations",
-        "Advanced analytics"
+        "Everything in Pro Monthly",
+        "Cover letter AI generator",
+        "Interview preparation",
+        "Priority support",
+        "Early access to new features",
+        "Resume analytics"
       ],
-      buttonText: "Contact Sales",
-      buttonHref: "mailto:sales@yourvalue.in",
+      buttonText: "Get Yearly Plan",
+      buttonHref: "/auth",
       popular: false,
-      background: "#1a1a1a",
-      border: "#333333"
+      background: "linear-gradient(135deg, #D6A3FB 0%, #C576F4 100%)",
+      border: "#D6A3FB"
     }
   ];
 
@@ -75,33 +76,33 @@ export default function PricingPage() {
       {/* Header */}
       <div className="container-x py-16">
         <div className="text-center mb-16">
-          <h1 className="text-5xl font-black text-white mb-4" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>
+          <h1 className="text-5xl font-black text-[#F5F5F5] mb-4" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>
             Simple Pricing
           </h1>
-          <p className="text-xl text-white/60">
+          <p className="text-lg text-[#888888] mb-8">
             Start free. Upgrade when ready.
           </p>
         </div>
 
         {/* Billing Toggle */}
         <div className="flex justify-center mb-12">
-          <div className="bg-[#111111] rounded-full p-1 border border-white/10">
+          <div className="inline-flex rounded-xl bg-[#0f0f0f] p-1 border border-[#222222]">
             <button
               onClick={() => setBillingCycle('monthly')}
-              className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${
+              className={`px-6 py-2 rounded-lg text-sm font-medium transition-all ${
                 billingCycle === 'monthly'
                   ? 'bg-[#ABF62D] text-black'
-                  : 'text-white/60 hover:text-white'
+                  : 'text-[#888888] hover:text-white'
               }`}
             >
               Monthly
             </button>
             <button
               onClick={() => setBillingCycle('yearly')}
-              className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${
+              className={`px-6 py-2 rounded-lg text-sm font-medium transition-all ${
                 billingCycle === 'yearly'
                   ? 'bg-[#ABF62D] text-black'
-                  : 'text-white/60 hover:text-white'
+                  : 'text-[#888888] hover:text-white'
               }`}
             >
               Yearly (Save 17%)
@@ -109,18 +110,23 @@ export default function PricingPage() {
           </div>
         </div>
 
+        <div className="text-center py-16">
+          <h2 className="text-4xl font-black text-[#F5F5F5] mb-4" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>
+            Start free. Grow with us.
+          </h2>
+          <p className="text-lg text-[#888888] mb-8">
+            Choose the perfect plan for your career journey
+          </p>
+        </div>
+
         {/* Pricing Cards */}
-        <div className="grid gap-8 lg:grid-cols-3 mb-16">
+        <div className="grid gap-6 md:grid-cols-3 mb-12">
           {plans.map((plan) => (
-            <div
-              key={plan.name}
-              className={`relative rounded-2xl border-2 p-8 transition-all hover:scale-105 ${
-                plan.popular
-                  ? 'border-[#ABF62D] shadow-[0_0_30px_rgba(171,246,45,0.3)]'
-                  : 'border-white/10 hover:border-white/20'
-              }`}
-              style={{ background: plan.background }}
-            >
+            <div key={plan.name} className={`rounded-2xl p-6 border-2 transition-all ${
+              plan.name === "Pro Monthly" ? 'border-[#ABF62D]' : 
+              plan.name === "Pro Yearly" ? 'border-[#D6A3FB]' : 
+              'border-[#222222]'
+            }`} style={{ background: plan.background }}>
               {/* Popular Badge */}
               {plan.popular && (
                 <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
@@ -131,37 +137,40 @@ export default function PricingPage() {
               )}
 
               {/* Plan Header */}
-              <div className="text-center mb-8">
-                <h3 className="text-2xl font-black text-white mb-2" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>
-                  {plan.name}
-                </h3>
-                <div className="mb-2">
-                  <span className="text-4xl font-black text-white">{plan.price}</span>
-                  <span className="text-white/60 ml-2">{plan.period}</span>
+              <div className="text-center mb-4">
+                <h3 className="text-xl font-black text-[#F5F5F5]">{plan.name}</h3>
+                <div className="text-3xl font-black mb-2">
+                  <span className="text-[#ABF62D]">{plan.price}</span>
+                  <span className="text-[#888888] text-sm">
+                    {plan.smallText && (
+                      <>
+                        <span className="line-through mr-2">{plan.strikethrough}</span>
+                      {" "}
+                      {plan.period}
+                    </>
+                    )}
+                    {!plan.smallText && plan.period}
+                  </span>
                 </div>
-                <p className="text-white/60">{plan.description}</p>
+                <p className="text-[#888888]">{plan.description}</p>
               </div>
 
               {/* Features */}
-              <div className="space-y-4 mb-8">
-                {plan.features.map((feature, index) => (
-                  <div key={index} className="flex items-start gap-3">
-                    <div className="flex-shrink-0 w-5 h-5 rounded-full bg-[#ABF62D]/20 flex items-center justify-center mt-0.5">
-                      <svg className="w-3 h-3 text-[#ABF62D]" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-8-8a1 1 0 011.414-1.414l8 8a1 1 0 001.414 0z" clipRule="evenodd" />
-                      </svg>
-                    </div>
-                    <span className="text-white/80 text-sm">{feature}</span>
-                  </div>
+              <ul className="space-y-2 text-[#888888]">
+                {plan.features.map((feature, idx) => (
+                  <li key={idx} className="flex items-center gap-2">
+                    <span className="text-[#ABF62D]">✓</span>
+                    <span>{feature}</span>
+                  </li>
                 ))}
-              </div>
+              </ul>
 
               {/* CTA Button */}
               <Link
                 href={plan.buttonHref}
                 className={`w-full py-4 rounded-xl font-bold text-center transition-all ${
-                  plan.popular
-                    ? 'bg-black text-white hover:bg-gray-900 shadow-lg'
+                  plan.name === "Pro Monthly" || plan.name === "Pro Yearly" 
+                    ? 'bg-[#ABF62D] text-black hover:bg-gray-900 shadow-lg' 
                     : 'bg-white/10 text-white hover:bg-white/20 border border-white/20'
                 }`}
               >
@@ -171,68 +180,92 @@ export default function PricingPage() {
           ))}
         </div>
 
-        {/* FAQ Section */}
-        <div className="max-w-4xl mx-auto">
-          <h2 className="text-3xl font-black text-white text-center mb-12" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>
-            Frequently Asked Questions
-          </h2>
+        <div className="text-center">
+          <Link
+            href="/pricing"
+            className="inline-flex items-center px-8 py-3 bg-transparent text-[#ABF62D] font-bold rounded-xl border border-[#ABF62D] hover:bg-[#ABF62D] hover:text-black transition-all"
+          >
+            Compare Plans
+          </Link>
+        </div>
+
+        <div className="text-center py-8">
+          <p className="text-[#888888] text-lg">
+            Pro Yearly saves you ₹(240-249) 
+            compared to paying monthly
+          </p>
+        </div>
+      </div>
+
+      {/* FAQ Section */}
+      <div className="max-w-4xl mx-auto">
+        <h2 className="text-3xl font-black text-[#F5F5F5] text-center mb-12" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>
+          Frequently Asked Questions
+        </h2>
+        
+        <div className="grid gap-8 md:grid-cols-2">
+          {[
+            {
+              question: "Can I cancel anytime?",
+              answer: "Yes, cancel anytime. No questions asked."
+            },
+            {
+              question: "Is my data safe?",
+              answer: "Yes, we never share your data with anyone."
+            },
+            {
+              question: "What payment methods are accepted?",
+              answer: "UPI, Credit/Debit card, Net banking via Razorpay."
+            },
+            {
+              question: "Can I switch plans?",
+              answer: "Yes, upgrade or downgrade anytime."
+            }
+          ].map((faq, index) => (
+            <div key={index} className="bg-[#0f0f0f] rounded-2xl p-6 border border-[#222222]">
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-lg font-semibold text-[#F5F5F5]">{faq.question}</h3>
+                <button
+                  onClick={() => setExpandedIndex(expandedIndex === index ? null : index)}
+                  className="text-[#ABF62D] hover:text-[#9fdf2a] transition-colors"
+                >
+                  {expandedIndex === index ? '−' : '+'}
+                </button>
           
           <div className="grid gap-8 md:grid-cols-2">
             {[
               {
-                question: "Can I switch plans anytime?",
-                answer: "Yes! You can upgrade or downgrade your plan at any time. Changes take effect immediately."
+                question: "Can I cancel anytime?",
+                answer: "Yes, cancel anytime. No questions asked."
               },
               {
-                question: "What's included in the free trial?",
-                answer: "The free trial gives you full access to all Pro features for 7 days. No credit card required."
+                question: "Is my data safe?",
+                answer: "Yes, we never share your data with anyone."
               },
               {
-                question: "Do you offer student discounts?",
-                answer: "Yes! We offer 50% off for students with valid .edu email addresses."
+                question: "What payment methods are accepted?",
+                answer: "UPI, Credit/Debit card, Net banking via Razorpay."
               },
               {
-                question: "Can I cancel my subscription?",
-                answer: "Absolutely. You can cancel anytime and continue using the service until the end of your billing period."
-              },
-              {
-                question: "What payment methods do you accept?",
-                answer: "We accept all major credit cards, debit cards, UPI, and net banking."
-              },
-              {
-                question: "Is my data secure?",
-                answer: "Yes! We use industry-standard encryption and never share your data with third parties."
+                question: "Can I switch plans?",
+                answer: "Yes, upgrade or downgrade anytime."
               }
             ].map((faq, index) => (
-              <div key={index} className="bg-[#111111] rounded-2xl p-6 border border-white/10">
-                <h3 className="text-lg font-semibold text-white mb-3">{faq.question}</h3>
-                <p className="text-white/70 leading-relaxed">{faq.answer}</p>
+              <div key={index} className="bg-[#0f0f0f] rounded-2xl p-6 border border-[#222222]">
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="text-lg font-semibold text-[#F5F5F5]">{faq.question}</h3>
+                  <button
+                    onClick={() => setExpandedIndex(expandedIndex === index ? null : index)}
+                    className="text-[#ABF62D] hover:text-[#9fdf2a] transition-colors"
+                  >
+                    {expandedIndex === index ? '−' : '+'}
+                  </button>
+                </div>
+                <div className={`overflow-hidden transition-all duration-300 ${expandedIndex === index ? 'max-h-96' : 'max-h-0'}`}>
+                  <p className="text-[#888888] leading-relaxed">{faq.answer}</p>
+                </div>
               </div>
             ))}
-          </div>
-        </div>
-
-        {/* CTA Section */}
-        <div className="text-center py-16">
-          <h2 className="text-2xl font-black text-white mb-4" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>
-            Ready to build your resume?
-          </h2>
-          <p className="text-white/60 mb-8">
-            Join thousands of professionals who've transformed their careers
-          </p>
-          <div className="flex gap-4 justify-center">
-            <Link
-              href="/builder"
-              className="px-8 py-4 bg-[#ABF62D] text-black font-bold rounded-xl hover:bg-[#9fdf2a] transition-all"
-            >
-              Start Building Free
-            </Link>
-            <Link
-              href="/pricing"
-              className="px-8 py-4 bg-white/10 text-white font-bold rounded-xl hover:bg-white/20 border border-white/20 transition-all"
-            >
-              Compare Plans
-            </Link>
           </div>
         </div>
       </div>

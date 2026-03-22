@@ -4,6 +4,7 @@ export type ResumePersonalInfo = {
   emailAddress: string;
   cityState: string;
   linkedInUrl?: string;
+  profilePhoto?: string;
 };
 
 export type ResumeEducation = {
@@ -55,6 +56,7 @@ export function getEmptyResumeData(): ResumeData {
       emailAddress: "",
       cityState: "",
       linkedInUrl: "",
+      profilePhoto: "",
     },
     education: [
       {

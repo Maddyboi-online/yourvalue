@@ -1,4 +1,4 @@
-import { Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
+import { Document, Page, Text, View, StyleSheet, Image } from "@react-pdf/renderer";
 import type { ResumeData } from "@/lib/resumeTypes";
 import { formatRange, uniqNonEmpty } from "@/lib/formatters";
 
@@ -69,7 +69,33 @@ export default function ResumePdfDocument({ data }: { data: ResumeData }) {
     <Document>
       <Page size="A4" style={styles.page}>
         <View style={styles.topBar} />
-        <Text style={styles.name}>{personal.fullName || "Your Name"}</Text>
+        
+        {/* Header with Profile Photo */}
+        <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 12 }}>
+          <View style={{ flex: 1 }}>
+            <Text style={styles.name}>{personal.fullName || "Your Name"}</Text>
+          </View>
+          
+          {/* Profile Photo */}
+          {personal.profilePhoto ? (
+            <View style={{ 
+              width: 80, 
+              height: 80, 
+              borderRadius: 40, 
+              marginLeft: 20,
+              overflow: 'hidden'
+            }}>
+              <Image 
+                src={personal.profilePhoto} 
+                style={{ 
+                  width: '100%', 
+                  height: '100%', 
+                  objectFit: 'cover' 
+                }} 
+              />
+            </View>
+          ) : null}
+        </View>
 
         <View style={styles.contactRow}>
           <ContactItem label="Phone" value={personal.phoneNumber} />
