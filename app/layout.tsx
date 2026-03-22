@@ -1,7 +1,10 @@
 import "./globals.css";
 import { Inter } from "next/font/google";
 import type { Metadata } from "next";
+import MotionWrapper from "@/components/MotionWrapper";
+import BackToTop from "@/components/BackToTop";
 import CustomCursor from "@/components/CustomCursor";
+import ScrollProgress from "@/components/ScrollProgress";
 import SiteFooter from "@/components/SiteFooter";
 import SiteHeader from "@/components/SiteHeader";
 
@@ -25,10 +28,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className={`${inter.variable} bg-gradient-to-br from-purple-950 via-indigo-950 to-black`}>
         <div className="min-h-dvh">
+          <ScrollProgress />
           <SiteHeader />
           <CustomCursor />
-          {children}
+          <MotionWrapper>
+            {children}
+          </MotionWrapper>
           <SiteFooter />
+          <BackToTop />
         </div>
       </body>
     </html>

@@ -76,3 +76,37 @@
     opacity: 0 !important;
   }
 }
+
+/* YV Logo Pulse Animation */
+@keyframes logo-pulse {
+  0%, 100% {
+    box-shadow: 0 0 0px #ABF62D;
+  }
+  50% {
+    box-shadow: 0 0 12px #ABF62D;
+  }
+}
+
+.yv-logo-pulse {
+  animation: logo-pulse 2s ease-in-out infinite;
+}
+
+/* Company Logos Scroll Animation */
+@keyframes scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-scroll {
+  animation: scroll 20s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-scroll {
+    animation: none;
+  }
+}

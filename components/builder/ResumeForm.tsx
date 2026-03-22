@@ -500,6 +500,9 @@ export default function ResumeForm({ initialData, onSubmit }: Props) {
                             onChange={(e) => updateWork(idx, { bullet1: e.target.value })}
                             placeholder="What did you do?"
                           />
+                          <div className={`mt-2 text-xs font-semibold ${w.bullet1.length > 150 ? 'text-[#ff4444]' : 'text-white/40'}`}>
+                            {w.bullet1.length} / 150 characters
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -514,6 +517,9 @@ export default function ResumeForm({ initialData, onSubmit }: Props) {
                         onChange={(e) => updateWork(idx, { bullet2: e.target.value })}
                         placeholder="Impact or responsibility"
                       />
+                      <div className={`mt-2 text-xs font-semibold ${w.bullet2.length > 150 ? 'text-[#ff4444]' : 'text-white/40'}`}>
+                        {w.bullet2.length} / 150 characters
+                      </div>
                     </div>
                     <div className="rounded-2xl bg-[#111111] p-3 ring-1 ring-white/10 md:col-span-2">
                       <label className="label">Bullet 3</label>
@@ -523,6 +529,9 @@ export default function ResumeForm({ initialData, onSubmit }: Props) {
                         onChange={(e) => updateWork(idx, { bullet3: e.target.value })}
                         placeholder="Result, metric, or project outcome"
                       />
+                      <div className={`mt-2 text-xs font-semibold ${w.bullet3.length > 150 ? 'text-[#ff4444]' : 'text-white/40'}`}>
+                        {w.bullet3.length} / 150 characters
+                      </div>
                     </div>
                   </div>
 
@@ -636,6 +645,9 @@ export default function ResumeForm({ initialData, onSubmit }: Props) {
               onChange={(e) => setData((prev) => ({ ...prev, achievements: e.target.value }))}
               placeholder="e.g., Best Project Award (2024), Rank 1 in college contest, Scholarship..."
             />
+            <div className={`mt-2 text-xs font-semibold ${data.achievements.length > 150 ? 'text-[#ff4444]' : 'text-white/40'}`}>
+              {data.achievements.length} / 150 characters
+            </div>
           </section>
 
           {/* Submit */}

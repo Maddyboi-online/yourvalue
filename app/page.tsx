@@ -40,6 +40,25 @@ export default function LandingPage() {
                 No signup. No downloads required until preview.
               </p>
             </div>
+            
+            <div className="mt-4 flex flex-wrap gap-2">
+              <div className="rounded-full bg-white/20 px-3 py-1 text-xs font-medium text-white flex items-center gap-1">
+                <span className="text-[#ABF62D]">✓</span>
+                100% Free
+              </div>
+              <div className="rounded-full bg-white/20 px-3 py-1 text-xs font-medium text-white flex items-center gap-1">
+                <span className="text-[#ABF62D]">✓</span>
+                No Signup Required
+              </div>
+              <div className="rounded-full bg-white/20 px-3 py-1 text-xs font-medium text-white flex items-center gap-1">
+                <span className="text-[#ABF62D]">✓</span>
+                Instant PDF Download
+              </div>
+            </div>
+            
+            <div className="mt-3 text-sm text-white/60">
+              🔥 2,847 resumes built this week
+            </div>
           </div>
 
           <Link
@@ -87,6 +106,36 @@ export default function LandingPage() {
             </div>
           </Link>
         </motion.div>
+      </section>
+
+      {/* Company Logos */}
+      <section className="bg-[#0a0a0a] py-8">
+        <div className="container-x">
+          <div className="text-center mb-6">
+            <p className="text-xs font-extrabold uppercase tracking-wider text-white/50">Trusted by students from</p>
+          </div>
+          <div className="overflow-hidden">
+            <div className="flex animate-scroll gap-8 text-white/30 text-sm whitespace-nowrap md:justify-center">
+              <span>TCS</span>
+              <span>•</span>
+              <span>Infosys</span>
+              <span>•</span>
+              <span>Wipro</span>
+              <span>•</span>
+              <span>Google</span>
+              <span>•</span>
+              <span>Amazon</span>
+              <span>•</span>
+              <span>Flipkart</span>
+              <span>•</span>
+              <span>Zomato</span>
+              <span>•</span>
+              <span>Freshworks</span>
+              <span>•</span>
+              <span>Zoho</span>
+            </div>
+          </div>
+        </div>
       </section>
 
       {/* How it works */}
@@ -152,7 +201,7 @@ export default function LandingPage() {
           {[
             {
               number: "01",
-              title: "Freshers (0 Experience)",
+              title: "Freshers",
               description: "Perfect resume with just your education and skills. No experience needed."
             },
             {
