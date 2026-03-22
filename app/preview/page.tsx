@@ -1,32 +1,78 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useMemo, useState, Suspense } from "react";
 import { motion } from "framer-motion";
 import { getEmptyResumeData, RESUME_STORAGE_KEY, type ResumeData } from "@/lib/resumeTypes";
 import ResumePreview from "@/components/resume/ResumePreview";
 import PdfDownloadButton from "@/components/resume/PdfDownloadButton";
 import SiteFooter from "@/components/SiteFooter";
+import { supabase } from "@/lib/supabase";
+import ClassicTemplate from "@/components/resume/templates/ClassicTemplate";
+import ModernTemplate from "@/components/resume/templates/ModernTemplate";
+import MinimalTemplate from "@/components/resume/templates/MinimalTemplate";
+import CreativeTemplate from "@/components/resume/templates/CreativeTemplate";
 
-export default function PreviewPage() {
+type TemplateType = 'classic' | 'modern' | 'minimal' | 'creative';
+
+const templates = [
+  { id: 'classic', name: 'Classic', component: ClassicTemplate, description: 'Professional traditional look' },
+  { id: 'modern', name: 'Modern', component: ModernTemplate, description: 'Black background with lime sidebar' },
+  { id: 'minimal', name: 'Minimal', component: MinimalTemplate, description: 'Clean and simple design' },
+  { id: 'creative', name: 'Creative', component: CreativeTemplate, description: 'Two-column purple accent' },
+];
+
+function PreviewContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [data, setData] = useState<ResumeData>(getEmptyResumeData);
   const [loaded, setLoaded] = useState(false);
+  const [selectedTemplate, setSelectedTemplate] = useState<TemplateType>('classic');
+  const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem(RESUME_STORAGE_KEY);
-      if (!raw) {
-        setLoaded(true);
-        return;
+    const loadData = async () => {
+      const editingResumeId = searchParams.get('resume');
+      
+      if (editingResumeId) {
+        // Load from Supabase
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) {
+          router.push('/auth');
+          return;
+        }
+
+        const { data: resume, error } = await supabase
+          .from('resumes')
+          .select('*')
+          .eq('id', editingResumeId)
+          .eq('user_id', session.user.id)
+          .single();
+
+        if (error || !resume) {
+          router.push('/dashboard');
+          return;
+        }
+
+        setData(resume.data);
+        setUser(session.user);
+      } else {
+        // Load from localStorage
+        try {
+          const raw = localStorage.getItem(RESUME_STORAGE_KEY);
+          if (raw) {
+            setData(JSON.parse(raw) as ResumeData);
+          }
+        } catch {
+          setData(getEmptyResumeData());
+        }
       }
-      setData(JSON.parse(raw) as ResumeData);
+      
       setLoaded(true);
-    } catch {
-      setData(getEmptyResumeData());
-      setLoaded(true);
-    }
-  }, []);
+    };
+
+    loadData();
+  }, [searchParams, router]);
 
   const hasAny = useMemo(() => {
     return (
@@ -40,6 +86,11 @@ export default function PreviewPage() {
   const handleClear = () => {
     localStorage.removeItem(RESUME_STORAGE_KEY);
     setData(getEmptyResumeData());
+  };
+
+  const getSelectedTemplateComponent = () => {
+    const template = templates.find(t => t.id === selectedTemplate);
+    return template?.component || ClassicTemplate;
   };
 
   return (
@@ -77,39 +128,92 @@ export default function PreviewPage() {
             </button>
           </motion.div>
         ) : (
-          <div className="mt-6 grid gap-5 md:grid-cols-[320px_1fr] md:items-start">
-            <motion.aside
+          <div className="mt-6 space-y-6">
+            {/* Template Selector */}
+            <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
-              className="rounded-3xl bg-[#111111] p-4 ring-1 ring-white/10 shadow-soft"
+              className="rounded-3xl bg-[#111111] p-6 ring-1 ring-white/10 shadow-soft"
             >
-              <div className="space-y-3">
-                <p className="text-sm font-extrabold text-white">Download</p>
-                <PdfDownloadButton data={data} />
-                <div className="rounded-2xl bg-white/5 p-4 ring-1 ring-white/10">
-                  <p className="text-xs font-extrabold text-[#ABF62D]">Tip</p>
-                  <p className="mt-1 text-xs font-semibold text-white/65">
-                    Keep bullet points crisp. Strong impact statements get noticed.
-                  </p>
-                </div>
+              <h2 className="text-lg font-black text-white mb-4">Choose Template</h2>
+              <div className="grid gap-4 md:grid-cols-4">
+                {templates.map((template) => (
+                  <div
+                    key={template.id}
+                    onClick={() => {
+                      if (template.id === 'classic' || user) {
+                        setSelectedTemplate(template.id as TemplateType);
+                      }
+                    }}
+                    className={`relative cursor-pointer rounded-2xl p-4 border-2 transition-all ${
+                      selectedTemplate === template.id
+                        ? 'border-[#ABF62D] shadow-[0_0_20px_rgba(171,246,45,0.3)]'
+                        : 'border-white/20 hover:border-white/40'
+                    } ${(template.id !== 'classic' && !user) ? 'opacity-50' : ''}`}
+                  >
+                    {(template.id !== 'classic' && !user) && (
+                      <div className="absolute top-2 right-2">
+                        <span className="inline-flex items-center gap-1 px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs rounded-full">
+                          <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
+                          </svg>
+                          Pro
+                        </span>
+                      </div>
+                    )}
+                    <div className="aspect-[3/4] bg-gray-800 rounded-lg mb-3 flex items-center justify-center">
+                      <span className="text-white/50 text-sm">{template.name}</span>
+                    </div>
+                    <h3 className="text-sm font-bold text-white mb-1">{template.name}</h3>
+                    <p className="text-xs text-white/60">{template.description}</p>
+                  </div>
+                ))}
               </div>
-            </motion.aside>
+            </motion.div>
 
-            <motion.section
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              className="rounded-3xl bg-white p-3 ring-1 ring-white/20 md:p-4"
-            >
-              <ResumePreview data={data} />
-            </motion.section>
+            <div className="grid gap-5 md:grid-cols-[320px_1fr] md:items-start">
+              <motion.aside
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+                className="rounded-3xl bg-[#111111] p-4 ring-1 ring-white/10 shadow-soft"
+              >
+                <div className="space-y-3">
+                  <p className="text-sm font-extrabold text-white">Download</p>
+                  <PdfDownloadButton data={data} template={getSelectedTemplateComponent()} />
+                  <div className="rounded-2xl bg-white/5 p-4 ring-1 ring-white/10">
+                    <p className="text-xs font-extrabold text-[#ABF62D]">Tip</p>
+                    <p className="mt-1 text-xs font-semibold text-white/65">
+                      Keep bullet points crisp. Strong impact statements get noticed.
+                    </p>
+                  </div>
+                </div>
+              </motion.aside>
+
+              <motion.section
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
+                className="rounded-3xl bg-white p-3 ring-1 ring-white/20 md:p-4"
+              >
+                <ResumePreview data={data} template={getSelectedTemplateComponent()} />
+              </motion.section>
+            </div>
           </div>
         )}
       </div>
 
       <SiteFooter />
     </main>
+  );
+}
+
+export default function PreviewPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-black flex items-center justify-center text-white">Loading...</div>}>
+      <PreviewContent />
+    </Suspense>
   );
 }
 

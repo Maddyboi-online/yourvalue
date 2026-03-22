@@ -3,11 +3,13 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { ResumeData, ResumeEducation, ResumeWorkExperience, ResumeCertification } from "@/lib/resumeTypes";
+import { getEmptyResumeData } from "@/lib/resumeTypes";
 import TagInput from "@/components/builder/TagInput";
 
 type Props = {
   initialData: ResumeData;
   onSubmit: (data: ResumeData) => void;
+  onDataChange?: (data: ResumeData) => void;
 };
 
 function removeAt<T>(arr: T[], index: number) {
@@ -72,7 +74,7 @@ function SuggestInput({ value, placeholder, suggestions, onChange }: SuggestInpu
   );
 }
 
-export default function ResumeForm({ initialData, onSubmit }: Props) {
+export default function ResumeForm({ initialData, onSubmit, onDataChange }: Props) {
   const technicalSkillSuggestions = [
     "JavaScript",
     "Python",
@@ -148,28 +150,44 @@ export default function ResumeForm({ initialData, onSubmit }: Props) {
   const hasAtLeastOneCert = useMemo(() => data.certifications.length > 0, [data.certifications.length]);
 
   const updatePersonal = (patch: Partial<ResumeData["personal"]>) => {
-    setData((prev) => ({ ...prev, personal: { ...prev.personal, ...patch } }));
+    setData((prev) => {
+      const newData = { ...prev, personal: { ...prev.personal, ...patch } };
+      onDataChange?.(newData);
+      return newData;
+    });
   };
 
   const updateEducation = (index: number, patch: Partial<ResumeEducation>) => {
-    setData((prev) => ({
-      ...prev,
-      education: prev.education.map((e, i) => (i === index ? { ...e, ...patch } : e)),
-    }));
+    setData((prev) => {
+      const newData = {
+        ...prev,
+        education: prev.education.map((e, i) => (i === index ? { ...e, ...patch } : e)),
+      };
+      onDataChange?.(newData);
+      return newData;
+    });
   };
 
   const updateWork = (index: number, patch: Partial<ResumeWorkExperience>) => {
-    setData((prev) => ({
-      ...prev,
-      workExperience: prev.workExperience.map((w, i) => (i === index ? { ...w, ...patch } : w)),
-    }));
+    setData((prev) => {
+      const newData = {
+        ...prev,
+        workExperience: prev.workExperience.map((w, i) => (i === index ? { ...w, ...patch } : w)),
+      };
+      onDataChange?.(newData);
+      return newData;
+    });
   };
 
   const updateCertification = (index: number, patch: Partial<ResumeCertification>) => {
-    setData((prev) => ({
-      ...prev,
-      certifications: prev.certifications.map((c, i) => (i === index ? { ...c, ...patch } : c)),
-    }));
+    setData((prev) => {
+      const newData = {
+        ...prev,
+        certifications: prev.certifications.map((c, i) => (i === index ? { ...c, ...patch } : c)),
+      };
+      onDataChange?.(newData);
+      return newData;
+    });
   };
 
   return (
@@ -262,21 +280,17 @@ export default function ResumeForm({ initialData, onSubmit }: Props) {
               <button
                 type="button"
                 className="btn-ghost btn bg-white px-3 py-2"
-                onClick={() =>
-                  setData((prev) => ({
-                    ...prev,
+                onClick={() => {
+                  const newData = {
+                    ...data,
                     education: [
-                      ...prev.education,
-                      {
-                        schoolCollegeName: "",
-                        degreeOrClass: "",
-                        boardOrUniversity: "",
-                        yearOfPassing: "",
-                        percentageOrCgpa: "",
-                      },
+                      ...data.education,
+                      getEmptyResumeData().education[0],
                     ],
-                  }))
-                }
+                  };
+                  setData(newData);
+                  onDataChange?.(newData);
+                }}
               >
                 + Add Education
               </button>
@@ -301,7 +315,11 @@ export default function ResumeForm({ initialData, onSubmit }: Props) {
                     <button
                       type="button"
                       className="rounded-xl bg-[#ABF62D] px-3 py-2 text-sm font-bold text-black ring-1 ring-[#ABF62D]/60 hover:bg-[#9fdf2a]"
-                      onClick={() => setData((prev) => ({ ...prev, education: removeAt(prev.education, idx) }))}
+                      onClick={() => {
+                        const newData = { ...data, education: removeAt(data.education, idx) };
+                        setData(newData);
+                        onDataChange?.(newData);
+                      }}
                       disabled={!hasAtLeastOneEducation || data.education.length <= 1}
                       aria-disabled={data.education.length <= 1}
                     >
@@ -369,14 +387,22 @@ export default function ResumeForm({ initialData, onSubmit }: Props) {
               <TagInput
                 label="Technical Skills (add as tags)"
                 value={data.skills.technicalSkills}
-                onChange={(next) => setData((prev) => ({ ...prev, skills: { ...prev.skills, technicalSkills: next } }))}
+                onChange={(next) => {
+                  const newData = { ...data, skills: { ...data.skills, technicalSkills: next } };
+                  setData(newData);
+                  onDataChange?.(newData);
+                }}
                 placeholder="e.g., React, TypeScript, SQL"
                 suggestions={technicalSkillSuggestions}
               />
               <TagInput
                 label="Soft Skills (add as tags)"
                 value={data.skills.softSkills}
-                onChange={(next) => setData((prev) => ({ ...prev, skills: { ...prev.skills, softSkills: next } }))}
+                onChange={(next) => {
+                  const newData = { ...data, skills: { ...data.skills, softSkills: next } };
+                  setData(newData);
+                  onDataChange?.(newData);
+                }}
                 placeholder="e.g., Communication, Leadership"
                 suggestions={softSkillSuggestions}
               />
@@ -385,7 +411,11 @@ export default function ResumeForm({ initialData, onSubmit }: Props) {
             <TagInput
               label="Languages Known"
               value={data.skills.languagesKnown}
-              onChange={(next) => setData((prev) => ({ ...prev, skills: { ...prev.skills, languagesKnown: next } }))}
+              onChange={(next) => {
+                const newData = { ...data, skills: { ...data.skills, languagesKnown: next } };
+                setData(newData);
+                onDataChange?.(newData);
+              }}
               placeholder="e.g., English, Tamil, Hindi"
               suggestions={languageSuggestions}
             />
@@ -401,11 +431,11 @@ export default function ResumeForm({ initialData, onSubmit }: Props) {
               <button
                 type="button"
                 className="btn-ghost btn bg-white px-3 py-2"
-                onClick={() =>
-                  setData((prev) => ({
-                    ...prev,
+                onClick={() => {
+                  const newData = {
+                    ...data,
                     workExperience: [
-                      ...prev.workExperience,
+                      ...data.workExperience,
                       {
                         companyOrInternshipName: "",
                         yourRoleOrPosition: "",
@@ -416,8 +446,10 @@ export default function ResumeForm({ initialData, onSubmit }: Props) {
                         bullet3: "",
                       },
                     ],
-                  }))
-                }
+                  };
+                  setData(newData);
+                  onDataChange?.(newData);
+                }}
               >
                 + Add Experience
               </button>
@@ -442,9 +474,11 @@ export default function ResumeForm({ initialData, onSubmit }: Props) {
                     <button
                       type="button"
                       className="rounded-xl bg-[#ABF62D] px-3 py-2 text-sm font-bold text-black ring-1 ring-[#ABF62D]/60 hover:bg-[#9fdf2a]"
-                      onClick={() =>
-                        setData((prev) => ({ ...prev, workExperience: removeAt(prev.workExperience, idx) }))
-                      }
+                      onClick={() => {
+                        const newData = { ...data, workExperience: removeAt(data.workExperience, idx) };
+                        setData(newData);
+                        onDataChange?.(newData);
+                      }}
                       disabled={!hasAtLeastOneWork || data.workExperience.length <= 1}
                       aria-disabled={data.workExperience.length <= 1}
                     >
@@ -588,9 +622,11 @@ export default function ResumeForm({ initialData, onSubmit }: Props) {
                     <button
                       type="button"
                       className="rounded-xl bg-[#ABF62D] px-3 py-2 text-sm font-bold text-black ring-1 ring-[#ABF62D]/60 hover:bg-[#9fdf2a]"
-                      onClick={() =>
-                        setData((prev) => ({ ...prev, certifications: removeAt(prev.certifications, idx) }))
-                      }
+                      onClick={() => {
+                        const newData = { ...data, certifications: removeAt(data.certifications, idx) };
+                        setData(newData);
+                        onDataChange?.(newData);
+                      }}
                       disabled={!hasAtLeastOneCert || data.certifications.length <= 1}
                       aria-disabled={data.certifications.length <= 1}
                     >
@@ -642,7 +678,11 @@ export default function ResumeForm({ initialData, onSubmit }: Props) {
             <textarea
               className="input min-h-[130px]"
               value={data.achievements}
-              onChange={(e) => setData((prev) => ({ ...prev, achievements: e.target.value }))}
+              onChange={(e) => {
+                const newData = { ...data, achievements: e.target.value };
+                setData(newData);
+                onDataChange?.(newData);
+              }}
               placeholder="e.g., Best Project Award (2024), Rank 1 in college contest, Scholarship..."
             />
             <div className={`mt-2 text-xs font-semibold ${data.achievements.length > 150 ? 'text-[#ff4444]' : 'text-white/40'}`}>
@@ -655,7 +695,11 @@ export default function ResumeForm({ initialData, onSubmit }: Props) {
             <button
               type="button"
               className="btn-ghost btn bg-white"
-              onClick={() => setData(initialData)}
+              onClick={() => {
+                const newData = initialData;
+                setData(newData);
+                onDataChange?.(newData);
+              }}
             >
               Reset
             </button>

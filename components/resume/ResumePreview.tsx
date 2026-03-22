@@ -3,6 +3,7 @@ import { formatRange, uniqNonEmpty } from "@/lib/formatters";
 
 type Props = {
   data: ResumeData;
+  template?: React.ComponentType<{ data: ResumeData }>;
 };
 
 function ContactLine({ label, value }: { label: string; value: string }) {
@@ -30,11 +31,16 @@ function BulletList({ bullets }: { bullets: string[] }) {
   );
 }
 
-export default function ResumePreview({ data }: Props) {
+export default function ResumePreview({ data, template }: Props) {
   const personal = data.personal;
   const technical = uniqNonEmpty(data.skills.technicalSkills);
   const soft = uniqNonEmpty(data.skills.softSkills);
   const languages = uniqNonEmpty(data.skills.languagesKnown);
+
+  if (template) {
+    const TemplateComponent = template;
+    return <TemplateComponent data={data} />;
+  }
 
   return (
     <div className="w-full overflow-x-auto pb-6">

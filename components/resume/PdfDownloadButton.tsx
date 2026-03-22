@@ -6,7 +6,10 @@ import confetti from "canvas-confetti";
 import type { ResumeData } from "@/lib/resumeTypes";
 import ResumePdfDocument from "@/components/resume/ResumePdfDocument";
 
-export default function PdfDownloadButton({ data }: { data: ResumeData }) {
+export default function PdfDownloadButton({ data, template = ResumePdfDocument }: { 
+  data: ResumeData; 
+  template?: React.ComponentType<{ data: ResumeData }>;
+}) {
   const fileName = useMemo(() => {
     const name = (data.personal.fullName || "YourValue").trim().replace(/\s+/g, "-");
     return `${name}-resume.pdf`;
@@ -54,9 +57,11 @@ export default function PdfDownloadButton({ data }: { data: ResumeData }) {
     setTimeout(() => setIsDownloading(false), 3000);
   };
 
+  const TemplateComponent = template;
+
   return (
     <PDFDownloadLink
-      document={<ResumePdfDocument data={data} />}
+      document={<TemplateComponent data={data} />}
       fileName={fileName}
       className="block"
     >

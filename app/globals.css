@@ -2,13 +2,42 @@
 @tailwind components;
 @tailwind utilities;
 
+/* CSS Variables for Theme System */
+:root {
+  --bg: #ffffff;
+  --bg-secondary: #f5f5f5;
+  --text: #000000;
+  --text-muted: #666666;
+  --border: #e0e0e0;
+  --card: #ffffff;
+}
+
+[data-theme="light"] {
+  --bg: #ffffff;
+  --bg-secondary: #f5f5f5;
+  --text: #000000;
+  --text-muted: #666666;
+  --border: #e0e0e0;
+  --card: #ffffff;
+}
+
+[data-theme="dark"] {
+  --bg: #000000;
+  --bg-secondary: #111111;
+  --text: #ffffff;
+  --text-muted: #999999;
+  --border: #222222;
+  --card: #111111;
+}
+
 @layer base {
   html {
     scroll-behavior: smooth;
   }
 
   body {
-    @apply bg-gradient-to-b from-white via-sky-50 to-white text-deepblue;
+    background: var(--bg);
+    color: var(--text);
     cursor: none;
   }
 }
