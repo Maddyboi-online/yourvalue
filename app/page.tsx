@@ -188,6 +188,69 @@ export default function LandingPage() {
           ))}
         </div>
       </section>
+
+      {/* Resume for College Students */}
+      <section className="container-x pt-16 md:pt-20">
+        <div className="space-y-2">
+          <p className="text-xs font-extrabold uppercase tracking-wider text-[#ABF62D]">Resume for College Students</p>
+          <h2 className="text-3xl font-black text-white md:text-4xl" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>
+            Built for every stage of your journey
+          </h2>
+        </div>
+        
+        <div className="mt-7 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          {[
+            {
+              number: "01",
+              title: "Freshers (0 Experience)",
+              description: "Perfect resume with just your education and skills. No experience needed."
+            },
+            {
+              number: "02", 
+              title: "Internship Seekers",
+              description: "Highlight projects and certifications to land your first internship."
+            },
+            {
+              number: "03",
+              title: "Campus Placements", 
+              description: "Stand out in college drives with a professional ATS-friendly resume."
+            },
+            {
+              number: "04",
+              title: "Postgraduate Students",
+              description: "Showcase research, publications and advanced skills for higher studies."
+            }
+          ].map((card, idx) => (
+            <motion.div
+              key={card.title}
+              initial={{ opacity: 0, y: 14 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: idx * 0.08, duration: 0.6 }}
+              className="group rounded-3xl bg-[#111111] p-6 ring-1 ring-white/10 hover:ring-[#ABF62D]/30 hover:-translate-y-1 transition-all duration-300 cursor-pointer"
+            >
+              <div className="flex items-center gap-3 mb-4">
+                <div className="flex h-[44px] w-[44px] items-center justify-center rounded-full bg-[#ABF62D] text-lg font-bold text-black">
+                  {card.number}
+                </div>
+              </div>
+              <h3 className="text-base font-black text-white mb-3" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>
+                {card.title}
+              </h3>
+              <p className="text-sm leading-relaxed text-white/60">
+                {card.description}
+              </p>
+              <div className="mt-5 h-px w-full bg-gradient-to-r from-[#ABF62D] to-[#D6A3FB] opacity-60" />
+            </motion.div>
+          ))}
+        </div>
+        
+        <div className="mt-10 flex justify-center">
+          <Link href="/builder" className="btn text-base font-black px-8 py-4 bg-[#ABF62D] text-black hover:bg-[#9fdf2a] transition-all duration-300 hover:scale-105">
+            Build Your College Resume Free
+          </Link>
+        </div>
+      </section>
     </main>
   );
 }
