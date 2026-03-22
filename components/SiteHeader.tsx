@@ -57,6 +57,12 @@ export default function SiteHeader() {
               <Link href="/preview" className="font-semibold text-white/70 hover:text-lime transition-colors">
                 Preview
               </Link>
+              <Link href="/ats" className="font-semibold text-white/70 hover:text-lime transition-colors">
+                ATS Check
+              </Link>
+              <Link href="/scorecard" className="font-semibold text-white/70 hover:text-lime transition-colors">
+                Score Card
+              </Link>
             </nav>
 
             {/* Theme Toggle */}
@@ -164,6 +170,34 @@ export default function SiteHeader() {
             </div>
             
             <nav className="flex flex-col items-center justify-center flex-1 gap-8 text-lg">
+              <Link
+                href="/builder"
+                className="text-white font-semibold hover:text-[#ABF62D] transition-colors"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Build
+              </Link>
+              <Link
+                href="/preview"
+                className="text-white font-semibold hover:text-[#ABF62D] transition-colors"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Preview
+              </Link>
+              <Link
+                href="/ats"
+                className="text-white font-semibold hover:text-[#ABF62D] transition-colors"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                ATS Check
+              </Link>
+              <Link
+                href="/scorecard"
+                className="text-white font-semibold hover:text-[#ABF62D] transition-colors"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Score Card
+              </Link>
               {user ? (
                 <>
                   <div className="flex flex-col items-center gap-4">

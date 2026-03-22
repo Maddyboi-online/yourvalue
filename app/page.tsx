@@ -243,13 +243,84 @@ export default function LandingPage() {
             </motion.div>
           ))}
         </div>
-        
         <div className="mt-10 flex justify-center">
           <Link href="/builder" className="btn text-base font-black px-8 py-4 bg-[#ABF62D] text-black hover:bg-[#9fdf2a] transition-all duration-300 hover:scale-105">
             Build Your College Resume Free
           </Link>
         </div>
       </section>
+
+      {/* New Features Section */}
+      <section className="py-20">
+        <div className="container-x">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-12"
+          >
+            <h2 className="text-4xl font-black text-white mb-4" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>
+              More than a resume builder
+            </h2>
+            <p className="text-lg text-white/60">
+              Discover your true value and unlock your career potential
+            </p>
+          </motion.div>
+
+          <div className="grid gap-6 md:grid-cols-3">
+            {[
+              {
+                title: "ATS Score Checker",
+                description: "See if robots approve your resume",
+                button: "Check ATS Score",
+                link: "/ats",
+                icon: "🤖"
+              },
+              {
+                title: "Skill Score Card",
+                description: "Discover your hidden strengths",
+                button: "Get My Score",
+                link: "/scorecard",
+                icon: "🎯"
+              },
+              {
+                title: "Job Matches",
+                description: "Find roles you qualify for",
+                button: "See My Matches",
+                link: "/scorecard",
+                icon: "💼"
+              }
+            ].map((feature, idx) => (
+              <motion.div
+                key={feature.title}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: idx * 0.1, duration: 0.6 }}
+                className="group rounded-3xl bg-[#111111] p-8 ring-1 ring-[#333333] hover:ring-[#ABF62D]/50 hover:-translate-y-2 transition-all duration-500 cursor-pointer"
+              >
+                <div className="text-5xl mb-6">{feature.icon}</div>
+                <h3 className="text-2xl font-black text-white mb-4" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>
+                  {feature.title}
+                </h3>
+                <p className="text-base leading-relaxed text-white/60 mb-6">
+                  {feature.description}
+                </p>
+                <Link 
+                  href={feature.link}
+                  className="inline-flex items-center px-6 py-3 bg-[#ABF62D] text-black font-bold rounded-lg hover:bg-[#9fdf2a] transition-all duration-300 group-hover:scale-105"
+                >
+                  {feature.button}
+                  <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </Link>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
     </main>
   );
 }
