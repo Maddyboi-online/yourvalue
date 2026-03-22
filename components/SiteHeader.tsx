@@ -2,144 +2,96 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export default function SiteHeader() {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const pathname = usePathname();
+
+  const navLinks = [
+    { href: "/builder", label: "Build" },
+    { href: "/preview", label: "Preview" },
+    { href: "/ats", label: "ATS Check" },
+    { href: "/scorecard", label: "Score Card" },
+    { href: "/cover-letter", label: "Cover Letter" },
+    { href: "/interview", label: "Interview Prep" },
+    { href: "/pricing", label: "Pricing" },
+  ];
 
   return (
     <>
-      <header className="sticky top-0 z-50 border-b border-white/10 bg-black/80 backdrop-blur">
-        <div className="container-x py-3">
-          <div className="flex items-center justify-between gap-4">
+      <header className="sticky top-0 z-50 bg-black/95 backdrop-blur border-b border-white/10">
+        <div className="max-w-7xl mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            
             <Link href="/" className="flex items-center gap-2">
-              <span className="inline-flex h-9 w-9 items-center justify-center rounded-2xl bg-[#ABF62D] text-black font-black shadow-soft yv-logo-pulse">
+              <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-[#ABF62D] text-black font-black text-sm">
                 YV
               </span>
-              <div className="leading-tight">
-                <p className="text-sm font-extrabold text-white" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>YourValue</p>
-                <p className="text-[11px] font-semibold text-white/50">Resume Builder</p>
+              <div>
+                <p className="text-sm font-extrabold text-white leading-tight">YourValue</p>
+                <p className="text-[11px] text-white/50 leading-tight">Resume Builder</p>
               </div>
             </Link>
 
-            <nav className="hidden items-center gap-6 text-sm md:flex">
-              <Link href="/builder" className="font-semibold text-white/70 hover:text-lime transition-colors">
-                Build
-              </Link>
-              <Link href="/preview" className="font-semibold text-white/70 hover:text-lime transition-colors">
-                Preview
-              </Link>
-              <Link href="/ats" className="font-semibold text-white/70 hover:text-lime transition-colors">
-                ATS Check
-              </Link>
-              <Link href="/scorecard" className="font-semibold text-white/70 hover:text-lime transition-colors">
-                Score Card
-              </Link>
-              <Link href="/pricing" className="font-semibold text-white/70 hover:text-lime transition-colors">
-                Pricing
-              </Link>
-              <Link href="/cover-letter" className="font-semibold text-white/70 hover:text-lime transition-colors">
-                Cover Letter
-              </Link>
-              <Link href="/interview" className="font-semibold text-white/70 hover:text-lime transition-colors">
-                Interview Prep
-              </Link>
+            <nav className="hidden lg:flex items-center gap-6 text-sm">
+              {navLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={`font-medium transition-colors ${
+                    pathname === link.href
+                      ? "text-[#ABF62D]"
+                      : "text-white/60 hover:text-white"
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              ))}
             </nav>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-3">
               <Link
                 href="/builder"
-                className="btn text-base font-black px-6 py-3 bg-[#ABF62D] text-black hover:bg-[#9fdf2a] transition-all duration-300 hover:shadow-[0_0_20px_rgba(171,246,45,0.4)]"
-                aria-label="Build My Resume Free"
+                className="hidden md:inline-flex items-center px-5 py-2.5 bg-[#ABF62D] text-black font-bold text-sm rounded-full hover:bg-[#9fdf2a] hover:scale-105 transition-all duration-300 whitespace-nowrap"
               >
                 Build Free
               </Link>
-              
-              {/* Mobile Hamburger Menu */}
+
               <button
-                className="md:hidden flex flex-col gap-1 p-2"
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                onClick={() => setIsOpen(!isOpen)}
+                className="lg:hidden flex flex-col gap-1.5 p-2"
                 aria-label="Toggle menu"
               >
-                <span className={`h-0.5 w-6 bg-white transition-all duration-300 ${isMobileMenuOpen ? 'rotate-45 translate-y-1.5' : ''}`}></span>
-                <span className={`h-0.5 w-6 bg-white transition-all duration-300 ${isMobileMenuOpen ? 'opacity-0' : ''}`}></span>
-                <span className={`h-0.5 w-6 bg-white transition-all duration-300 ${isMobileMenuOpen ? '-rotate-45 -translate-y-1.5' : ''}`}></span>
+                <span className={`h-0.5 w-6 bg-white transition-all duration-300 ${isOpen ? "rotate-45 translate-y-2" : ""}`} />
+                <span className={`h-0.5 w-6 bg-white transition-all duration-300 ${isOpen ? "opacity-0" : ""}`} />
+                <span className={`h-0.5 w-6 bg-white transition-all duration-300 ${isOpen ? "-rotate-45 -translate-y-2" : ""}`} />
               </button>
             </div>
           </div>
         </div>
       </header>
+
       <div className="h-px bg-gradient-to-r from-[#ABF62D] via-[#D6A3FB] to-transparent" />
 
-      {/* Mobile Menu Overlay */}
-      {isMobileMenuOpen && (
-        <div className="fixed inset-0 z-50 bg-black md:hidden">
-          <div className="flex flex-col h-full">
-            <div className="flex justify-end p-4">
-              <button
-                className="p-2 text-white"
-                onClick={() => setIsMobileMenuOpen(false)}
-                aria-label="Close menu"
-              >
-                <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
-            
-            <nav className="flex flex-col items-center justify-center flex-1 gap-8 text-lg">
+      {isOpen && (
+        <div className="fixed inset-0 z-40 bg-black lg:hidden">
+          <div className="flex flex-col h-full pt-20 px-6">
+            <nav className="flex flex-col gap-6">
+              {navLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  onClick={() => setIsOpen(false)}
+                  className="text-xl font-semibold text-white hover:text-[#ABF62D] transition-colors"
+                >
+                  {link.label}
+                </Link>
+              ))}
               <Link
                 href="/builder"
-                className="text-white font-semibold hover:text-[#ABF62D] transition-colors"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Build
-              </Link>
-              <Link
-                href="/preview"
-                className="text-white font-semibold hover:text-[#ABF62D] transition-colors"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Preview
-              </Link>
-              <Link
-                href="/ats"
-                className="text-white font-semibold hover:text-[#ABF62D] transition-colors"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                ATS Check
-              </Link>
-              <Link
-                href="/scorecard"
-                className="text-white font-semibold hover:text-[#ABF62D] transition-colors"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Score Card
-              </Link>
-              <Link
-                href="/pricing"
-                className="text-white font-semibold hover:text-[#ABF62D] transition-colors"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Pricing
-              </Link>
-              <Link
-                href="/cover-letter"
-                className="text-white font-semibold hover:text-[#ABF62D] transition-colors"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Cover Letter
-              </Link>
-              <Link
-                href="/interview"
-                className="text-white font-semibold hover:text-[#ABF62D] transition-colors"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Interview Prep
-              </Link>
-              <Link
-                href="/builder"
-                className="btn text-base font-black px-8 py-4 bg-[#ABF62D] text-black hover:bg-[#9fdf2a] transition-all duration-300"
-                onClick={() => setIsMobileMenuOpen(false)}
+                onClick={() => setIsOpen(false)}
+                className="mt-4 inline-flex justify-center px-8 py-4 bg-[#ABF62D] text-black font-black text-base rounded-full"
               >
                 Build Free
               </Link>
