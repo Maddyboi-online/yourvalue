@@ -104,7 +104,10 @@
   .input {
     @apply w-full rounded-xl border border-gray-300 bg-gray-900 px-3 py-2 text-sm text-gray-100
     shadow-sm outline-none transition focus:border-[#ABF62D] focus:ring-2 focus:ring-[#ABF62D]/20;
-    placeholder-gray-500;
+  }
+
+  input::placeholder {
+    color: #6b7280;
   }
 
   .label {
