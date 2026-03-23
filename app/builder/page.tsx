@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect, Suspense, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { getEmptyResumeData, RESUME_STORAGE_KEY, type ResumeData } from "@/lib/resumeTypes";
 import toast from "react-hot-toast";
@@ -10,8 +10,8 @@ function BuilderContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [data, setData] = useState<ResumeData>(getEmptyResumeData);
-  const [isSaving, setIsSaving] = useState(false);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
+  const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     const loadResume = () => {
@@ -31,14 +31,22 @@ function BuilderContent() {
 
   const handleDataChange = (newData: ResumeData) => {
     setData(newData);
-    localStorage.setItem(RESUME_STORAGE_KEY, JSON.stringify(newData));
     
-    setIsSaving(true);
-    setTimeout(() => {
+    // Clear existing timeout
+    if (saveTimeoutRef.current) {
+      clearTimeout(saveTimeoutRef.current);
+    }
+    
+    // Set new timeout for 1 second
+    saveTimeoutRef.current = setTimeout(() => {
+      localStorage.setItem(RESUME_STORAGE_KEY, JSON.stringify(newData));
       setLastSaved(new Date());
-      setIsSaving(false);
-      toast.success('Resume saved locally!');
-    }, 500);
+      
+      // Only show toast if it's been more than 5 seconds since last save
+      if (!lastSaved || (new Date().getTime() - lastSaved.getTime() > 5000)) {
+        toast.success('Resume saved locally!');
+      }
+    }, 1000);
   };
 
   const handleSubmit = async (nextData: ResumeData) => {
@@ -120,10 +128,9 @@ function BuilderContent() {
               <div className="space-y-3">
                 <button
                   onClick={() => handleSubmit(data)}
-                  disabled={isSaving}
-                  className="w-full py-3 bg-[#ABF62D] text-black font-bold rounded-lg hover:bg-[#9fdf2a] transition-all disabled:opacity-50"
+                  className="w-full py-3 bg-[#ABF62D] text-black font-bold rounded-lg hover:bg-[#9fdf2a] transition-all"
                 >
-                  {isSaving ? 'Saving...' : 'Preview Resume'}
+                  Preview Resume
                 </button>
                 <button
                   onClick={handleClear}
