@@ -25,8 +25,17 @@ export default function SiteHeader() {
           <div className="flex items-center justify-between">
             
             <Link href="/" className="flex items-center gap-2">
-              <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-[#ABF62D] text-black font-black text-sm">
-                YV
+              <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-[#0a0a0a] overflow-hidden">
+                <svg width="28" height="28" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="9" y="38" width="9" height="14" rx="3" fill="#AAFF00" opacity="0.35"/>
+                  <rect x="22" y="28" width="9" height="24" rx="3" fill="#AAFF00" opacity="0.6"/>
+                  <rect x="35" y="18" width="9" height="34" rx="3" fill="#AAFF00"/>
+                  <polyline points="13.5,38 26.5,28 39.5,18 52,6" stroke="#AAFF00" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+                  <circle cx="13.5" cy="38" r="2.2" fill="#AAFF00"/>
+                  <circle cx="26.5" cy="28" r="2.2" fill="#AAFF00"/>
+                  <circle cx="39.5" cy="18" r="2.2" fill="#AAFF00"/>
+                  <path d="M45 5 L52 6 L51 13" stroke="#AAFF00" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+                </svg>
               </span>
               <div>
                 <p className="text-sm font-extrabold text-white leading-tight">YourValue</p>
