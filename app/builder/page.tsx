@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { getEmptyResumeData, RESUME_STORAGE_KEY, type ResumeData } from "@/lib/resumeTypes";
 import toast from "react-hot-toast";
 import ResumeForm from "@/components/builder/ResumeForm";
+import { track } from '@vercel/analytics';
 
 function BuilderContent() {
   const router = useRouter();
@@ -53,6 +54,7 @@ function BuilderContent() {
     localStorage.setItem(RESUME_STORAGE_KEY, JSON.stringify(nextData));
     setData(nextData);
     toast.success('Resume ready for preview!');
+    track('resume_previewed', { has_data: !!nextData.personal.fullName });
     router.push('/preview');
   };
 
@@ -127,7 +129,10 @@ function BuilderContent() {
               <h3 className="text-lg font-black text-white mb-4">Save Progress</h3>
               <div className="space-y-3">
                 <button
-                  onClick={() => handleSubmit(data)}
+                  onClick={() => {
+                    track('preview_button_clicked', { step: 'builder_to_preview' });
+                    handleSubmit(data);
+                  }}
                   className="w-full py-3 bg-[#ABF62D] text-black font-bold rounded-lg hover:bg-[#9fdf2a] transition-all"
                 >
                   Preview Resume

@@ -8,6 +8,7 @@ import CustomCursor from "@/components/CustomCursor";
 import ScrollProgress from "@/components/ScrollProgress";
 import SiteFooter from "@/components/SiteFooter";
 import SiteHeader from "@/components/SiteHeader";
+import { Analytics } from '@vercel/analytics/react';
 
 const inter = Inter({ subsets: ["latin"], display: "swap", variable: "--font-inter" });
 
@@ -29,6 +30,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className={`${inter.variable} bg-gradient-to-br from-purple-950 via-indigo-950 to-black`}>
         <div className="min-h-dvh">
+          <Analytics mode="production" />
           <ScrollProgress />
           <SiteHeader />
           <CustomCursor />
@@ -59,7 +61,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               },
             }}
           />
-        </div>
+                  </div>
       </body>
     </html>
   );
